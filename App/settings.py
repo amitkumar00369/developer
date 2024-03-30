@@ -25,13 +25,22 @@ SECRET_KEY = "django-insecure-tpq^-r#u-%fu4fd936f!0zf^uvk@6)208c5d_eu#zz^d7=**8w
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1','*']
+ALLOWED_HOSTS = ['localhost','172.31.34.204','65.0.100.104', '127.0.0.1','*']
 CORS_ALLOWED_ORIGINS = [
         "http://localhost:4000",
         "http://localhost:5000",
         "http://localhost:3000",
         "http://localhost:3001",
-       
+        "http://172.31.34.204:3000",
+        "http://172.31.34.204:4000",
+        "http://172.31.34.204:3001",
+        "http://65.0.100.104:3000",
+
+        "http://65.0.100.104:3001",
+        "http://65.0.100.104:4000",
+
+
+
 ]
 CORS_ALLOW_METHODS = (
     "DELETE",
@@ -71,7 +80,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     "rest_framework",
     'corsheaders',
-   
+    'storages', 
+    'whitenoise.runserver_nostatic',
     "rest_framework_simplejwt",
     "sarox",
 ]
@@ -114,6 +124,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     # 'django.middleware.csrf.CsrfViewMiddleware',
     
  
