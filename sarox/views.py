@@ -213,7 +213,30 @@ class AdminLogIn(APIView):
             
             if user:
                 if check_password(password,user.password):
-                    return Response({'message':"Admin Login Successfully",'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    payload = {
+                    'id': user.id,
+                    'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=9),
+                    'iat': datetime.datetime.utcnow()
+                        }
+
+                    token = jwt.encode(payload=payload, key='secret', algorithm='HS256')
+                
+                
+                    token_table_instance = AdminTokenTable.objects.filter(user_id=user.id).first()
+
+          # If an existing token entry exists, update the token, else create a new entry
+                    if token_table_instance:
+                        token_table_instance.token_store = token
+                        token_table_instance.save()
+                    else:
+                        token_table_instance = AdminTokenTable.objects.create(
+                        user_id=user.id,
+                        token_store=token,
+                        email=user.email
+                        )
+                    return Response({'message':"Admin Login Successfully",'token':token,'email':user.email,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                
+                    
                 
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -221,26 +244,35 @@ class AdminLogIn(APIView):
         
 class AdminLogOut(APIView):
     def post(self,request):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
         try:
-            email=request.data.get('email')
-            
-            if not email:
-                return Response({'error':'Please Enter Valid Email','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
-            
-            
-            user=AdminTables.objects.filter(email=email).first()
-            
-            if not user:
-                return Response({'error':'Admin not found','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
-            
-            if user:
-                return Response({'message':'Admin Logout Successfull','status':status.HTTP_200_OK},status.HTTP_200_OK)
-            
-        except Exception as e:
-            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
 
+        userId = payload['id']
 
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            token_instance.delete()
+            print("Token Deleted Successfully")
+        except UserTokenTable.DoesNotExist:
+            raise AuthenticationFailed('Invalid token')
+
+        return Response({'message': 'Logout successful','status':status.HTTP_200_OK}, status=status.HTTP_200_OK)
+        
 
 
 

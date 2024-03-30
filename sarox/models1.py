@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .managers import CustomUserManager
-
+from django.utils import timezone
 
 class CustomUser(AbstractUser):
     name = models.CharField(max_length=255)
@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     password = models.CharField(max_length=128)
     profile_image=models.CharField(max_length=128,blank=True)
     Designation=models.CharField(max_length=80,blank=True)
+
     
    
     # motors_assign=models.CharField(max_length=255,null=True,blank=True,default=False)
