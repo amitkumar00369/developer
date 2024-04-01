@@ -391,8 +391,12 @@ class ByCourseName(APIView):
 
             if code is None:
                 program = Course_table.objects.all().order_by('-id')
+                course_name=set(cor.course_name for cor in program)
+                course_id=set(cor.course_id for cor in program)
             else:
                 program = Course_table.objects.filter(course_id=code).all()
+                course_name=set(cor.course_name for cor in program)
+                course_id=set(cor.course_id for cor in program)
                 
 
                 
@@ -411,26 +415,33 @@ class ByCourseName(APIView):
             names=str(name)
             
             # Pass data to serializer
-            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':names,'course_id':code}}, status=status.HTTP_200_OK)
+            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course_name,'course_id':course_id}}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
            
            
+
+
 class CouuseName(APIView):
-    def get(self,request,id=None):
-        
+    def get(self, request, id=None):
         if id is None:
-            course=Course_table.objects.all()
-            # for prog in course:
-            #     name=prog.course_name
-            #     id=prog.course_id
-            course_name=set(cor.course_name for cor in course)
-            course_id=set(cor.course_id for cor in course)
+            courses = Course_table.objects.all()
             
-            return Response({'message':'Successful','data':{'course_name':course_name,'course_id':course_id}},status.HTTP_200_OK)
+            data = {}
+            for index, course in enumerate(courses, start=0):
+                data[index] = {
+                   
+                    'course_id': course.course_id,
+                    'course_name': course.course_name,
+ 
+                    
+                }
+            
+            return Response(data, status=200)
         else:
-            return Response({'error':'Not defined'},status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Not defined'}, status=400)
+
         
         
 
