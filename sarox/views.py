@@ -2,9 +2,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models1 import CustomUser,AdminTables,UserTokenTable,AdminStatusTable,AdminTokenTable,OTPVerification_TABLE,profile_image_table
+from .models1 import CustomUser,AdminTables,UserTokenTable,AdminStatusTable,AdminTokenTable,OTPVerification_TABLE,profile_image_table,Course_table
 from rest_framework.decorators import api_view
-from .serializers1 import UserSerializer,AdminSerializer,UserTokenSerializer,AdminStatusChangeSerializer,AdminTokenSerializer,ImageSerializer
+from .serializers1 import UserSerializer,AdminSerializer,UserTokenSerializer,AdminStatusChangeSerializer,AdminTokenSerializer,ImageSerializer,ProgramSerializer
 from rest_framework.permissions import IsAuthenticated
 import jwt,datetime
 from rest_framework.exceptions import AuthenticationFailed
@@ -268,7 +268,7 @@ class AdminLogOut(APIView):
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
             token_instance.delete()
             print("Token Deleted Successfully")
-        except UserTokenTable.DoesNotExist:
+        except AdminTokenTable.DoesNotExist:
             raise AuthenticationFailed('Invalid token')
 
         return Response({'message': 'Logout successful','status':status.HTTP_200_OK}, status=status.HTTP_200_OK)
@@ -295,3 +295,148 @@ class Imageupload(APIView):
         
         # Handle case when serializer is not valid
         return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+    
+    
+# Programe table ---------------------------------------------------------------------
+
+
+class WeekProgram(APIView):
+    def post(self,request):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            course_name=request.data.get('course_name')
+            course_id=request.data.get('course_id')
+            
+            
+            serializer=ProgramSerializer(data=request.data)
+            
+            if serializer.is_valid():
+                prog=serializer.save()
+                prog.course_name=course_name
+                prog.course_id=course_id
+                prog.headings={'heading':[prog.heading],'subheading':prog.text}
+                
+                prog.save()
+                return Response({'message':'Program submitted successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            else:
+                return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                
+            
+
+        except AdminTokenTable.DoesNotExist:
+            raise AuthenticationFailed('Invalid token')
+
+        return Response({'message': 'Logout successful','status':status.HTTP_200_OK}, status=status.HTTP_200_OK)
+    
+    
+    
+    
+# get all data when week 
+
+class ByCourseName(APIView):
+    def get(self, request, code=None):
+        
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).first()
+            if token_instance is None:
+                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = CustomUser.objects.filter(id=userId).first()
+            if user is None:
+                return Response({'error': "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+            if code is None:
+                program = Course_table.objects.all().order_by('-id')
+            else:
+                program = Course_table.objects.filter(course_id=code).all()
+                
+
+                
+                # heading=[prog.heading for prog in program]
+                # weeks_name = [prog.weeks for prog in program]
+                # heading=[prog.heading for prog in program]
+                # heading=[prog.heading for prog in program]
+                
+
+            serializer = ProgramSerializer(program, many=True) 
+            for prog in program:
+                name=prog.course_name
+               
+                    
+                
+            names=str(name)
+            
+            # Pass data to serializer
+            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':names,'course_id':code}}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+           
+           
+class CouuseName(APIView):
+    def get(self,request,id=None):
+        
+        if id is None:
+            course=Course_table.objects.all()
+            # for prog in course:
+            #     name=prog.course_name
+            #     id=prog.course_id
+            course_name=set(cor.course_name for cor in course)
+            course_id=set(cor.course_id for cor in course)
+            
+            return Response({'message':'Successful','data':{'course_name':course_name,'course_id':course_id}},status.HTTP_200_OK)
+        else:
+            return Response({'error':'Not defined'},status.HTTP_400_BAD_REQUEST)
+        
+        
+
+            
+        
+    
+    
+
+        

@@ -77,11 +77,23 @@ class OTPVerification_TABLE(models.Model):
 class profile_image_table(models.Model):
     profile_image = models.ImageField(upload_to='image/', blank=True, null=True)
     video_link=models.FileField(upload_to='videos/', blank=True, null=True)
+    ppts=models.FileField(upload_to='pdf/',blank=True,null=True)
     
 
 
 
-
+class Course_table(models.Model):
+    id=models.AutoField(primary_key=True)
+    weeks=models.CharField(max_length=20,blank=True,default=None)
+    text=models.JSONField(default=list,null=True,blank=True)
+    heading=models.CharField(max_length=255,default=list)
+    
+    video=models.CharField(max_length=128,blank=True)
+    PPT=models.CharField(max_length=128,blank=True)
+    course_name=models.CharField(max_length=255,blank=True)
+    course_id=models.CharField(max_length=20,blank=True)
+    headings=models.CharField(max_length=255,blank=True)
+    
 
 
 
