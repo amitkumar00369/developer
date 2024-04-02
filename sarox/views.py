@@ -330,6 +330,8 @@ class WeekProgram(APIView):
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             course_name=request.data.get('course_name')
             course_id=request.data.get('course_id')
+            text=request.data.get('text')
+            heading=request.data.get('heading')
             
             
             serializer=ProgramSerializer(data=request.data)
@@ -338,10 +340,10 @@ class WeekProgram(APIView):
                 prog=serializer.save()
                 prog.course_name=course_name
                 prog.course_id=course_id
-                prog.headings={'heading':[prog.heading],'subheading':prog.text}
+                prog.headings={'heading':[heading],'subheading':text}
                 
                 prog.save()
-                return Response({'message':'Program submitted successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'course_id':course_id,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
