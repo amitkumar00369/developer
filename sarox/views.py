@@ -436,6 +436,7 @@ class CouuseName(APIView):
                    
                     'course_id': course.course_id,
                     'course_name': course.course_name,
+                    'date':course.date
  
                     
                 }
