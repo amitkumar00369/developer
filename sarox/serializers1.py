@@ -1,6 +1,6 @@
 # serializers.py
 from rest_framework import serializers
-from .models1 import AdminTables,CustomUser,OTPVerification_TABLE,AdminTokenTable,UserTokenTable,profile_image_table,Course_table
+from .models1 import AdminTables,CustomUser,OTPVerification_TABLE,AdminTokenTable,UserTokenTable,profile_image_table,Course_table,CourseTable1
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -74,4 +74,9 @@ class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model=Course_table
         fields=['id','weeks','PPT','headings','video','date','time']
+        
+class CT1Serializer(serializers.ModelSerializer):
+    class Meta:
+        model=CourseTable1
+        fields=['courseid','weeks','PPT','headings','video','date','time']
         

@@ -2,9 +2,9 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models1 import CustomUser,AdminTables,UserTokenTable,AdminStatusTable,AdminTokenTable,OTPVerification_TABLE,profile_image_table,Course_table
+from .models1 import CustomUser,AdminTables,UserTokenTable,AdminStatusTable,AdminTokenTable,OTPVerification_TABLE,profile_image_table,Course_table,CourseTable1
 from rest_framework.decorators import api_view
-from .serializers1 import UserSerializer,AdminSerializer,UserTokenSerializer,AdminStatusChangeSerializer,AdminTokenSerializer,ImageSerializer,ProgramSerializer
+from .serializers1 import UserSerializer,AdminSerializer,UserTokenSerializer,AdminStatusChangeSerializer,AdminTokenSerializer,ImageSerializer,ProgramSerializer,CT1Serializer
 from rest_framework.permissions import IsAuthenticated
 import jwt,datetime
 from rest_framework.exceptions import AuthenticationFailed
@@ -329,21 +329,17 @@ class WeekProgram(APIView):
             if token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             course_name=request.data.get('course_name')
-            course_id=request.data.get('course_id')
             text=request.data.get('text')
             heading=request.data.get('heading')
-            
-            
             serializer=ProgramSerializer(data=request.data)
             
             if serializer.is_valid():
                 prog=serializer.save()
                 prog.course_name=course_name
-                prog.course_id=course_id
                 prog.headings={'heading':[heading],'subheading':text}
                 
                 prog.save()
-                return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'course_id':course_id,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
@@ -454,3 +450,25 @@ class CouuseName(APIView):
     
 
         
+
+
+class CourseTable1Reg(APIView):
+    def post(self, request):
+        
+        course_name=request.data.get('course_name')
+        text=request.data.get('text')
+        heading=request.data.get('heading')
+        serializer=CT1Serializer(data=request.data)
+            
+        if serializer.is_valid():
+            prog=serializer.save()
+            prog.course_name=course_name
+            prog.headings={'heading':[heading],'subheading':text}
+                
+            prog.save()
+            return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+        else:
+            return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                
+            

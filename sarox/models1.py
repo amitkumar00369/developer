@@ -102,6 +102,28 @@ class Course_table(models.Model):
         self.time = timezone.now().time()
         super().save(*args, **kwargs)
     
+    
+    
+class CourseTable1(models.Model):
+    courseid=models.AutoField(primary_key=True)
+    weeks=models.CharField(max_length=20,blank=True,default=None)
+    text=models.JSONField(default=list,null=True,blank=True)
+    heading=models.CharField(max_length=255,default=list)
+    video=models.CharField(max_length=128,blank=True)
+    PPT=models.CharField(max_length=128,blank=True)
+    course_name=models.CharField(max_length=255,blank=True)
+
+    headings=models.CharField(max_length=255,blank=True)
+    
+    date = models.DateField(default=timezone.now, blank=True)
+    time = models.TimeField(default=timezone.now, blank=True)
+
+    def save(self, *args, **kwargs):
+        # Update date and time fields to current date and time on every save
+        self.date = timezone.now().date()
+        self.time = timezone.now().time()
+        super().save(*args, **kwargs)
+    
 
     
 
