@@ -87,7 +87,6 @@ class Course_table(models.Model):
     weeks=models.CharField(max_length=20,blank=True,default=None)
     text=models.JSONField(default=list,null=True,blank=True)
     heading=models.CharField(max_length=255,default=list)
-    
     video=models.CharField(max_length=128,blank=True)
     PPT=models.CharField(max_length=128,blank=True)
     course_name=models.CharField(max_length=255,blank=True)
