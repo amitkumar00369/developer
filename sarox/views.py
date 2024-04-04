@@ -556,4 +556,55 @@ class GetAllCourse(APIView):
         
         
                 
+class UpdateInCT1(APIView):
+    def put(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
+            
+            if id is None:
+                return Response({'error': 'Not defined'}, status=400)
+              
+            if id:
+                course_name=request.data.get('course_name')
+                course=CourseTable1.objects.filter(courseid=id).first()
+                if not course:
+                    return Response({'error': 'Not defined'}, status=400)
+                    
+                serializer=CT1Serializer(course,data=request.data,partial=True)
+                if serializer.is_valid():
+                    c=serializer.save()
+                    c.course_name=course_name
+                    c.save()
+                    
+                
+                    return Response({'message':'Successfull','data':serializer.data,'course_id':course.courseid,'course_name':course.course_name},status=200)
+            else:
+                return Response({'error': 'Not defined'}, status=400)
+                
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
