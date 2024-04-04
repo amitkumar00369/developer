@@ -544,6 +544,10 @@ class GetAllCourse(APIView):
                     }
             
                 return Response(data, status=200)
+            if id:
+                course=CourseTable1.objects.filter(courseid=id).first()
+                
+                return Response({'message':'Successfull','course_name':course.course_name,'course_id':course.courseid},status=200)
             else:
                 return Response({'error': 'Not defined'}, status=400)
                 
