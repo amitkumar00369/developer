@@ -2,6 +2,7 @@ from django.urls import path
 from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CouuseName,CourseTable1Reg
 # from django.conf import settings
 # from django.conf.urls.static import static
+from .views import GetAllCourse
 
 
 urlpatterns = [
@@ -28,7 +29,8 @@ urlpatterns = [
     path('bycourse',ByCourseName.as_view()),
     path('bycourse/<str:code>',ByCourseName.as_view()),
     path('course/id_name/',CouuseName.as_view()),
-    path('post/course',CourseTable1Reg.as_view())
+    path('post/course',CourseTable1Reg.as_view()),
+    path('get/course',GetAllCourse.as_view())
 
     
     

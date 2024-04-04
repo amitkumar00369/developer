@@ -454,21 +454,102 @@ class CouuseName(APIView):
 
 class CourseTable1Reg(APIView):
     def post(self, request):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
         
-        course_name=request.data.get('course_name')
-        text=request.data.get('text')
-        heading=request.data.get('heading')
-        serializer=CT1Serializer(data=request.data)
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+        
+            course_name=request.data.get('course_name')
+            text=request.data.get('text')
+            heading=request.data.get('heading')
+            serializer=CT1Serializer(data=request.data)
             
-        if serializer.is_valid():
-            prog=serializer.save()
-            prog.course_name=course_name
-            prog.headings={'heading':[heading],'subheading':text}
+            if serializer.is_valid():
+                prog=serializer.save()
+                prog.course_name=course_name
+                prog.headings={'heading':[heading],'subheading':text}
                 
-            prog.save()
-            return Response({'message':'Program submitted successfully','data':serializer.data,'course_id':prog.courseid,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                prog.save()
+                return Response({'message':'Program submitted successfully','data':serializer.data,'course_id':prog.courseid,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
-        else:
-            return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+        except AdminTokenTable.DoesNotExist:
+            return Response({'error':'Token not found','statsu':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+        
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+
+
+class GetAllCourse(APIView):
+    def get(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            
+            if id is None:
+                course=CourseTable1.objects.all()
+                data = {}
+                for index, course in enumerate(course, start=0):
+                    data[index] = {
+                   
+                    'course_id': course.courseid,
+                    'course_name': course.course_name,
+                    'date':course.date
+                    }
+            
+                return Response(data, status=200)
+            else:
+                return Response({'error': 'Not defined'}, status=400)
+                
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
                 
             

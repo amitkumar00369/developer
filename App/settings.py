@@ -160,7 +160,17 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Vijay_johar_db',  # Replace 'your_database_name' with the name of your MySQL database
+#         'USER': '2024vijaydb',  # Replace 'your_database_username' with the MySQL username
+#         'PASSWORD': 'Vijay12345@#$',  # Replace 'your_database_password' with the MySQL password
+#         'HOST': 'localhost',  # MySQL host (usually 'localhost' for Hostinger)
+#         'PORT': '3306',  # MySQL port (usually '3306' for Hostinger)
+       
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
