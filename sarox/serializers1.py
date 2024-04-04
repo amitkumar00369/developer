@@ -78,5 +78,5 @@ class ProgramSerializer(serializers.ModelSerializer):
 class CT1Serializer(serializers.ModelSerializer):
     class Meta:
         model=CourseTable1
-        fields=['courseid','weeks','PPT','headings','video','date','time']
+        fields=['weeks','PPT','headings','video','date','time']
         

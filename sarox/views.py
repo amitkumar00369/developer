@@ -466,7 +466,7 @@ class CourseTable1Reg(APIView):
             prog.headings={'heading':[heading],'subheading':text}
                 
             prog.save()
-            return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            return Response({'message':'Program submitted successfully','data':serializer.data,'course_id':prog.courseid,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
         else:
             return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
