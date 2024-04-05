@@ -2,7 +2,7 @@ from django.urls import path
 from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CouuseName,CourseTable1Reg
 # from django.conf import settings
 # from django.conf.urls.static import static
-from .views import GetAllCourse,UpdateInCT1
+from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser
 
 
 urlpatterns = [
@@ -33,6 +33,7 @@ urlpatterns = [
     path('get/course',GetAllCourse.as_view()),
     path('get/course/<int:id>',GetAllCourse.as_view()),
     path('update/course/<int:id>',UpdateInCT1.as_view()),
+    path('get/all/course/user',GetAllCourseByUser.as_view()),
 
     
     
