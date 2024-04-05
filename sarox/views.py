@@ -660,3 +660,65 @@ class GetAllCourseByUser(APIView):
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
         
+        
+        
+class ByCourseID(APIView):
+    def get(self, request, id=None):
+        
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).first()
+            if token_instance is None:
+                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+            user = CustomUser.objects.filter(id=userId).first()
+            if user is None:
+                return Response({'error': "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+            if id is None:
+                return Response({'error': "course id not found"}, status=status.HTTP_400_BAD_REQUEST)
+             
+                
+            if id:
+                course=CourseTable1.objects.filter(courseid=id).first()
+                print('course',course)
+                
+            
+                serializer = CT1Serializer(course)
+                if serializer:
+                    
+                    return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course.course_name,'course_id':course.courseid}}, status=status.HTTP_200_OK) 
+                
+                else:
+                    return Response({'error':'Not defined'},status=400)
+                        
+                        
+         
+                        
+             
+                
+                
+
+
+    
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
