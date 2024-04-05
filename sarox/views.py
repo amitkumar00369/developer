@@ -405,13 +405,7 @@ class ByCourseName(APIView):
                 
 
             serializer = ProgramSerializer(program, many=True) 
-            for prog in program:
-                name=prog.course_name
-               
-                    
-                
-            names=str(name)
-            
+        
             # Pass data to serializer
             return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course_name,'course_id':course_id}}, status=status.HTTP_200_OK)
 
