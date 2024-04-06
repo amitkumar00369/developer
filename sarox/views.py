@@ -165,14 +165,65 @@ class User_profile_update(APIView):
 
 
            
-class ForgetUserPassword(APIView):
-    def post(self,request):
-        email=request.data.get('email')
+class forgetPassword(APIView):
+    def post(self, request):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
         
-        if not email:
-            return Response({'error':"Invalid Email",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            data=request.data
+
+            email=data.get('email')
+            new_password=data.get('new_password')
+            confirm_password=data.get('confirm_password')
+            if not email:
+                return Response({'error': 'Email is required','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+
+            user=CustomUser.objects.filter(email=email).first()
         
-        user=CustomUser.objects.filter(email).first()
+            if not user:
+                return Response({'error': 'Email not found','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+      
+          
+        
+            if new_password==confirm_password:
+
+                user.set_password(new_password)
+                user.save()
+                     
+                return Response({'message': 'Password changed successfully','status':status.HTTP_200_OK})
+
+            if new_password!=confirm_password:
+                    return Response({'error':'Your password not matched with new password','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+
+   
+
+
+        except Exception as e:
+             print(e)
+             return Response({'message': 'Internal server error','status':status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
         
         
 #ADMIN code ---------------------------------------------------------------------------------------
@@ -362,15 +413,20 @@ class WeekProgram(APIView):
                 
                 course_ids_set = [pro.course_id for pro in programs]
                 print('program',course_names_set)
-                if prog.course_name is None:
-                        prog.course_id = max(course_ids_set)+1
-                        prog.save()
+                
+                if prog.course_name:
+                    couser=Course_table.objects.filter(course_name=prog.course_name).first()
+                    
+                    if course_name in course_names_set:
+                        
+                
+                         prog.course_id = couser.course_id
+                         prog.save()
                     
 
     
-                if course_name not in course_names_set:
-                    
-       
+                    if course_name not in course_names_set:
+ 
                         prog.course_id = max(course_ids_set)+1
                         prog.save()
                 elif prog.course_name not in course_names_set:
@@ -473,25 +529,54 @@ class ByCourseName(APIView):
            
 
 
-class CouuseName(APIView):
+class CourseName(APIView):
     def get(self, request, cid=None):
-        if cid is None:
-            courses = Course_table.objects.all().order_by('course_id')
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).first()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).first()
+
             
-            data = {}
-            for index, course in enumerate(courses, start=0):
-                data[index] = {
+
+            if cid is None:
+                courses = Course_table.objects.all().order_by('course_id')
+            
+            if tokens or token_instance:
+                data = {}
+                for index, course in enumerate(courses, start=0):
+                    data[index] = {
                    
-                    'course_id': course.course_id,
-                    'course_name': course.course_name,
-                    'date':course.date
+                        'course_id': course.course_id,
+                        'course_name': course.course_name,
+                        'date':course.date
  
                     
-                }
+                     }
             
-            return Response(data, status=200)
-        else:
-            return Response({'error': 'Not defined'}, status=400)
+                return Response(data, status=200)
+            else:
+                return Response({'error': 'Not defined'}, status=400)
+            
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
         

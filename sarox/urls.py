@@ -1,16 +1,17 @@
 from django.urls import path
-from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CouuseName,CourseTable1Reg
+from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CourseTable1Reg
 # from django.conf import settings
 # from django.conf.urls.static import static
-from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID
+from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName
 
 
 urlpatterns = [
 
-    path('user/reg',UserSignIN.as_view()),
+    path('createCoach',UserSignIN.as_view()),
     path('user/login',UserLogIn.as_view()),
     path('user/logout',UserLogOut.as_view()),
     path('user/update/profile/<int:id>',User_profile_update.as_view()),
+    path('forgetPassword',forgetPassword.as_view()),
     
     
     
@@ -18,17 +19,17 @@ urlpatterns = [
     path('admin_signin',AdminSignIN.as_view()),
     path('admin_login',AdminLogIn.as_view()),
     path('admin/logout',AdminLogOut.as_view()),
-    path('user/details',UserDetails.as_view()),
-    path('user/details/<int:id>',UserDetails.as_view()),
+    path('getAllCoach',UserDetails.as_view()),
+    path('getCoachbyId<int:id>',UserDetails.as_view()),
     
     
     #Media and Image
     
     path('media/upload',Imageupload.as_view()),
-    path('program',WeekProgram.as_view()),
-    path('bycourse',ByCourseName.as_view()),
-    path('bycourse/<int:cid>',ByCourseName.as_view()),
-    path('course/id_name',CouuseName.as_view()),
+    path('createCourse',WeekProgram.as_view()),
+    # path('getAllCourse',ByCourseName.as_view()),
+    path('getCoursebyId/<int:cid>',ByCourseName.as_view()),
+    path('getAllCourse',CourseName.as_view()),
     path('post/course',CourseTable1Reg.as_view()),
     path('get/course',GetAllCourse.as_view()),
     path('get/course/<int:id>',GetAllCourse.as_view()),
