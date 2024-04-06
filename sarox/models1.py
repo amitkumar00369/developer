@@ -90,7 +90,7 @@ class Course_table(models.Model):
     video=models.CharField(max_length=128,blank=True)
     PPT=models.CharField(max_length=128,blank=True)
     course_name=models.CharField(max_length=255,blank=True)
-    course_id=models.CharField(max_length=20,blank=True)
+    course_id=models.IntegerField(default=0)
     headings=models.CharField(max_length=255,blank=True)
     
     date = models.DateField(default=timezone.now, blank=True)
@@ -101,7 +101,7 @@ class Course_table(models.Model):
         self.date = timezone.now().date()
         self.time = timezone.now().time()
         super().save(*args, **kwargs)
-    
+   
     
     
 class CourseTable1(models.Model):
@@ -111,7 +111,7 @@ class CourseTable1(models.Model):
     heading=models.CharField(max_length=255,default=list)
     video=models.CharField(max_length=128,blank=True)
     PPT=models.CharField(max_length=128,blank=True)
-    course_name=models.CharField(max_length=255,blank=True)
+    course_name=models.CharField(max_length=255,default=None,blank=True)
 
     headings=models.CharField(max_length=255,blank=True)
     

@@ -331,15 +331,65 @@ class WeekProgram(APIView):
             course_name=request.data.get('course_name')
             text=request.data.get('text')
             heading=request.data.get('heading')
-            serializer=ProgramSerializer(data=request.data)
             
+            programs = Course_table.objects.all()
+            course_names_set = {pro.course_name for pro in programs}
+            
+            serializer=ProgramSerializer(data=request.data,partial=True)
             if serializer.is_valid():
-                prog=serializer.save()
-                prog.course_name=course_name
-                prog.headings={'heading':[heading],'subheading':text}
-                
+                prog = serializer.save()
+                 # Assuming course_name is defined elsewhere
+
+  
+                prog.course_name = course_name
+                prog.headings = {'heading': [heading], 'subheading': text}
+                prog.course_id=prog.course_id
                 prog.save()
-                return Response({'message':'Program submitted successfully','data':serializer.data,'course_name':course_name,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+
+
+                
+
+    
+                
+                
+                course_ids_set = [pro.course_id for pro in programs]
+                print('program',course_names_set)
+                if prog.course_name is None:
+                        prog.course_id = max(course_ids_set)+1
+                        prog.save()
+                    
+
+    
+                if course_name not in course_names_set:
+                    
+       
+                        prog.course_id = max(course_ids_set)+1
+                        prog.save()
+                elif prog.course_name not in course_names_set:
+      
+                    return Response({'error': 'Course name does not match any existing courses.', 'status': status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+               
+
+ 
+                return Response({
+        'message': 'Program submitted successfully',
+        'data': serializer.data,
+        'course_name': course_name,
+        'course_id': prog.course_id,
+        'status': status.HTTP_200_OK
+    }, status=status.HTTP_200_OK)
+
+            
+            
+            
+                        
+                    
+             
+                
+             
+
             
             else:
                 return Response({'error':serializer.errors,'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
