@@ -165,6 +165,14 @@ class User_profile_update(APIView):
 
 
            
+class ForgetUserPassword(APIView):
+    def post(self,request):
+        email=request.data.get('email')
+        
+        if not email:
+            return Response({'error':"Invalid Email",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+        
+        user=CustomUser.objects.filter(email).first()
         
         
 #ADMIN code ---------------------------------------------------------------------------------------
@@ -407,7 +415,7 @@ class WeekProgram(APIView):
 # get all data when week 
 
 class ByCourseName(APIView):
-    def get(self, request, code=None):
+    def get(self, request, cid=None):
         
         token = request.headers.get('Authorization')
 
@@ -437,12 +445,12 @@ class ByCourseName(APIView):
             if user is None:
                 return Response({'error': "User not found"}, status=status.HTTP_400_BAD_REQUEST)
 
-            if code is None:
+            if cid is None:
                 program = Course_table.objects.all().order_by('-id')
                 course_name=set(cor.course_name for cor in program)
                 course_id=set(cor.course_id for cor in program)
             else:
-                program = Course_table.objects.filter(course_id=code).all()
+                program = Course_table.objects.filter(course_id=cid).all()
                 course_name=set(cor.course_name for cor in program)
                 course_id=set(cor.course_id for cor in program)
                 
@@ -466,9 +474,9 @@ class ByCourseName(APIView):
 
 
 class CouuseName(APIView):
-    def get(self, request, id=None):
-        if id is None:
-            courses = Course_table.objects.all()
+    def get(self, request, cid=None):
+        if cid is None:
+            courses = Course_table.objects.all().order_by('course_id')
             
             data = {}
             for index, course in enumerate(courses, start=0):
