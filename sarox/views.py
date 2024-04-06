@@ -223,7 +223,71 @@ class forgetPassword(APIView):
              print(e)
              return Response({'message': 'Internal server error','status':status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+
+class DeleteCoach(APIView):
+    def delete(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
         
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            if id is None:
+                return Response({'error':"Coach id is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            coach=CustomUser.objects.filter(id=id).first()
+            if coach is None:
+                return Response({'error':"Coach not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            serializer=UserSerializer(coach,many=True)
+            if coach:
+                
+            
+                coach.delete()
+               
+            
+                return Response({'message':'Coach successfully deleted','status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+                
+            
+            
+                
+         
+
+
+
+
+
+
+
+
+
+
+
+
+
         
         
 #ADMIN code ---------------------------------------------------------------------------------------

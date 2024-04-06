@@ -2,7 +2,7 @@ from django.urls import path
 from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CourseTable1Reg
 # from django.conf import settings
 # from django.conf.urls.static import static
-from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName
+from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach
 
 
 urlpatterns = [
@@ -21,6 +21,8 @@ urlpatterns = [
     path('admin/logout',AdminLogOut.as_view()),
     path('getAllCoach',UserDetails.as_view()),
     path('getCoachbyId<int:id>',UserDetails.as_view()),
+    
+    path('deletCoachbyID/<int:id>',DeleteCoach.as_view()),
     
     
     #Media and Image

@@ -123,6 +123,17 @@ class CourseTable1(models.Model):
         self.date = timezone.now().date()
         self.time = timezone.now().time()
         super().save(*args, **kwargs)
+        
+        
+        
+        
+# class SurveyTable(models.Model):
+    
+        
+        
+        
+        
+
     
 
     
