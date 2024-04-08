@@ -54,7 +54,7 @@ CORS_ALLOW_METHODS = (
     "POST",
     "PUT",
 )
-
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = [
     'access-control-allow-origin',
     'access_token',
@@ -70,7 +70,6 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
-
 
 # Application definition
 
@@ -169,10 +168,10 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'vijay_db',       # Replace 'your_database_name' with your database name
+#         'NAME': 'u876992816_vijay_db',       # Replace 'your_database_name' with your database name
 #         'USER': 'vijay_82',   # Replace 'your_database_username' with your database username
 #         'PASSWORD': 'Coach@AWS82',  # Replace 'your_database_password' with your database password
-#         'HOST': '127.0.0.1',          # Replace 'your_mysql_host' with your MySQL host (e.g., 'localhost')
+#         'HOST': '89.117.27.1',          # Replace 'your_mysql_host' with your MySQL host (e.g., 'localhost')
 #         'PORT': '3306',                     # MySQL port (usually '3306')
 #     }
 # }

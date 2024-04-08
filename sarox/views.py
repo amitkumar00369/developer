@@ -621,23 +621,44 @@ class CourseName(APIView):
             
 
             if cid is None:
-                courses = Course_table.objects.all().order_by('course_id')
-            
+                courses = Course_table.objects.all().order_by('course_name')
+                
+            if not tokens or token_instance:
+                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+                
+
             if tokens or token_instance:
                 data = {}
-                for index, course in enumerate(courses, start=0):
-                    data[index] = {
+                seen_course_names = set(cor.course_name for cor in courses)  # Keep track of seen course names
+                course_list=list(seen_course_names)
+                print('course_list',course_list)
+                
+                datas=[]
+                
+                for cor_name in course_list:
+                    Courses=Course_table.objects.filter(course_name=cor_name).first()
+                    print('course',Courses)
                    
-                        'course_id': course.course_id,
-                        'course_name': course.course_name,
-                        'date':course.date
- 
-                    
-                     }
+                    data= {
+                        'course_id': Courses.course_id,
+                        'course_name': Courses.course_name,
+                        'date': Courses.date
+                        }
+                    datas.append(data)
+                        
+                   
+                return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                   
+                
             
-                return Response(data, status=200)
-            else:
-                return Response({'error': 'Not defined'}, status=400)
+                    
+    
+               
+            
+                  
+
+
+                
             
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)

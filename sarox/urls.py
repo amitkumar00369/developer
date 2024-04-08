@@ -3,6 +3,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 # from django.conf import settings
 # from django.conf.urls.static import static
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach
+from .surveyViews import CreateSurvey,getAllSurvey
 
 
 urlpatterns = [
@@ -38,6 +39,13 @@ urlpatterns = [
     path('update/course/<int:id>',UpdateInCT1.as_view()),
     path('get/all/course/user',GetAllCourseByUser.as_view()),
     path('get/details/course/by/<int:id>',ByCourseID.as_view()),
+    
+    
+    
+    # Suvey table urls
+    
+    path('createSurvey',CreateSurvey.as_view()),
+    path('getAllSurvey',getAllSurvey.as_view())
 
     
     

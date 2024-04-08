@@ -127,7 +127,20 @@ class CourseTable1(models.Model):
         
         
         
-# class SurveyTable(models.Model):
+class SurveyTable(models.Model):
+    organisation_name=models.CharField(max_length=128)
+    start_survey_date=models.DateField(default=timezone.now,blank=True)
+    survey_type=models.CharField(max_length=128,blank=True)
+    survey_name=models.CharField(max_length=128)
+    Max_no_of_participants=models.BigIntegerField(blank=True)
+    language=models.CharField(max_length=128)
+    survey_questions=models.CharField(max_length=255,blank=True)
+    
+    def save(self, *args, **kwargs):
+       
+        self.start_survey_date = timezone.now().date()
+        super().save(*args, **kwargs)
+    
     
         
         
