@@ -24,6 +24,7 @@ SECRET_KEY = "django-insecure-tpq^-r#u-%fu4fd936f!0zf^uvk@6)208c5d_eu#zz^d7=**8w
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = ['localhost','172.31.37.184','13.126.178.112', '127.0.0.1','*']
 CORS_ALLOWED_ORIGINS = [
@@ -41,6 +42,10 @@ CORS_ALLOWED_ORIGINS = [
         "http://13.126.178.112:3003",
         "http://13.126.178.112:3004",
         "http://13.126.178.112:3005",
+        "http://adminpanel.progrowth.coach"
+        "http://progrowth.coach"
+        "https://adminpanel.progrowth.coach"
+        "https://progrowth.coach"
        
 
 
