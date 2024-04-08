@@ -42,10 +42,10 @@ CORS_ALLOWED_ORIGINS = [
         "http://13.126.178.112:3003",
         "http://13.126.178.112:3004",
         "http://13.126.178.112:3005",
-        "http://adminpanel.progrowth.coach"
-        "http://progrowth.coach"
-        "https://adminpanel.progrowth.coach"
-        "https://progrowth.coach"
+        "http://adminpanel.progrowth.coach",
+        "http://progrowth.coach",
+        "https://adminpanel.progrowth.coach",
+        "https://progrowth.coach",
        
 
 

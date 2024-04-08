@@ -41,7 +41,8 @@ class CreateSurvey(APIView):
         # Retrieve the token instance from the AdminTokenTable
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
-            if token_instance is None:
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if not tokens or token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             
