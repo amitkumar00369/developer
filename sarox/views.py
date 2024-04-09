@@ -502,7 +502,7 @@ class WeekProgram(APIView):
             if token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             course_name=request.data.get('course_name')
-            text=request.data.get('text')
+            subheading=request.data.get('text')
             heading=request.data.get('heading')
             
             programs = Course_table.objects.all()
@@ -515,7 +515,7 @@ class WeekProgram(APIView):
 
   
                 prog.course_name = course_name
-                prog.headings = {'heading': [heading], 'subheading': text}
+                prog.headings = {'heading': [heading], 'subheading': subheading}
                 prog.course_id=prog.course_id
                 prog.save()
 
@@ -668,33 +668,33 @@ class CourseName(APIView):
             token_instance = UserTokenTable.objects.filter(user_id=userId).first()
             tokens=AdminTokenTable.objects.filter(user_id=userId).first()
    
-            if tokens and token_instance is None:
+            if not tokens and token_instance:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
             if cid is None:
                 courses = Course_table.objects.all().order_by('course_name')
                 
 
-            if tokens or token_instance:
-                data = {}
-                seen_course_names = set(cor.course_name for cor in courses)  # Keep track of seen course names
-                course_list=list(seen_course_names)
+           
+            data = {}
+            seen_course_names = set(cor.course_name for cor in courses)  # Keep track of seen course names
+            course_list=list(seen_course_names)
                 
                 
-                datas=[]
+            datas=[]
                 
-                for cor_name in course_list:
-                    Courses=Course_table.objects.filter(course_name=cor_name).first()
-                    print('course',Courses)
+            for cor_name in course_list:
+                Courses=Course_table.objects.filter(course_name=cor_name).first()
+                print('course',Courses)
                    
-                    data= {
-                        'course_id': Courses.course_id,
-                        'course_name': Courses.course_name,
-                        'date': Courses.date
-                        }
-                    datas.append(data)
+                data= {
+                    'course_id': Courses.course_id,
+                    'course_name': Courses.course_name,
+                    'date': Courses.date
+                    }
+                datas.append(data)
                         
                    
-                return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
 
   
         except Exception as e:
