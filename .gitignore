@@ -4,4 +4,4 @@
 /sarox/__pycache__
 /sarox/migrations/__pycache__
 /env
-/db.sqlite3
+db.sqlite3
