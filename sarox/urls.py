@@ -3,7 +3,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 # from django.conf import settings
 # from django.conf.urls.static import static
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach
-from .surveyViews import CreateSurvey,getAllSurvey
+from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey
 
 
 urlpatterns = [
@@ -45,7 +45,9 @@ urlpatterns = [
     # Suvey table urls
     
     path('createSurvey',CreateSurvey.as_view()),
-    path('getAllSurvey',getAllSurvey.as_view())
+    path('getAllSurvey',getAllSurvey.as_view()),
+    path('updateSurveyById/<int:id>',updateSurvey.as_view()),
+    path('deleteSurveyById/<int:id>',deleteSurvey.as_view()),
 
     
     

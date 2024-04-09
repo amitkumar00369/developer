@@ -932,13 +932,7 @@ class ByCourseID(APIView):
                 else:
                     return Response({'error':'Not defined'},status=400)
                         
-                        
-         
-                        
-             
-                
-                
-
+ 
 
     
 

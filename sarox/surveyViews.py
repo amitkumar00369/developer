@@ -41,8 +41,8 @@ class CreateSurvey(APIView):
         # Retrieve the token instance from the AdminTokenTable
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
-            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
-            if not tokens or token_instance is None:
+            tokens=UserTokenTable.objects.filter(user_id=userId).all()
+            if tokens and token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             
@@ -104,6 +104,103 @@ class getAllSurvey(APIView):
             
             
         
-  
+class updateSurvey(APIView):
+    def put(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if not tokens or token_instance:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if id is None:
+                return Response({'error':"Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            survey=SurveyTable.objects.filter(id=id).first()
+            if not survey:
+                return Response({'error':"Survey not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            serializer=SurveySerializer(survey,data=request.data,partial=True)
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response({'message':'Informations updated successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            else:
+                return Response({'error':serializer.errors},status=400)
+            
+            
+        except Exception as e:
+            return Response({'error':str(e)},status=500)
+        
+        
+class deleteSurvey(APIView):
+    def delete(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if not tokens or token_instance:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if id is None:
+                return Response({'error':"Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            survey=SurveyTable.objects.filter(id=id).first()
+            if not survey:
+                return Response({'error':"Survey not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            serializer=SurveySerializer(survey)
+            survey.delete()
+          
+            if serializer:
+               
+                return Response({'message':'Survey deleted successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            else:
+                return Response({'error':serializer.errors},status=400)
+            
+            
+        except Exception as e:
+            return Response({'error':str(e)},status=500)
+
+            
+        
+        
+        
     
     
