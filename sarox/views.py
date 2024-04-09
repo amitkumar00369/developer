@@ -113,7 +113,32 @@ class UserLogOut(APIView):
         
 class UserDetails(APIView):
     def get(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
         try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            tokens=UserTokenTable.objects.filter(user_id=userId).all()
+            if tokens and token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+      
             if id is None:
                 user=CustomUser.objects.all().order_by('-id')
                 
@@ -138,29 +163,53 @@ class UserDetails(APIView):
 class User_profile_update(APIView):
    
     def put(self,request,id=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
         try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            tokens=UserTokenTable.objects.filter(user_id=userId).all()
+            if tokens and token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
      
-           if id is None:
+     
+            if id is None:
                return Response({'error': 'User id not found', 'status': status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
            
     
-           user = CustomUser.objects.get(id=id)
+            user = CustomUser.objects.get(id=id)
            
            
-           if user is None:
+            if user is None:
                return Response({'error': 'User not found', 'status': status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
 
-           serializer = UserSerializer(user, data=request.data, partial=True)
-           if serializer.is_valid():
+            serializer = UserSerializer(user, data=request.data, partial=True)
+            if serializer.is_valid():
                 serializer.save()
                 return Response({'message': 'User Profile updated successfully', 'data': serializer.data, 'status': status.HTTP_200_OK})
       
            
-           else:
+            else:
                 return Response({'error': serializer.errors,'status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
-            
             return Response({'Message': 'Internal Server Error', 'status': status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -189,7 +238,8 @@ class forgetPassword(APIView):
         # Retrieve the token instance from the AdminTokenTable
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
-            if token_instance is None:
+            tokens=UserTokenTable.objects.filter(user_id=userId).all()
+            if tokens and token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             data=request.data
 
@@ -617,21 +667,18 @@ class CourseName(APIView):
         try:
             token_instance = UserTokenTable.objects.filter(user_id=userId).first()
             tokens=AdminTokenTable.objects.filter(user_id=userId).first()
-
-            
-
+   
+            if tokens and token_instance is None:
+                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
             if cid is None:
                 courses = Course_table.objects.all().order_by('course_name')
-                
-            if not tokens or token_instance:
-                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
                 
 
             if tokens or token_instance:
                 data = {}
                 seen_course_names = set(cor.course_name for cor in courses)  # Keep track of seen course names
                 course_list=list(seen_course_names)
-                print('course_list',course_list)
+                
                 
                 datas=[]
                 
@@ -648,18 +695,8 @@ class CourseName(APIView):
                         
                    
                 return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
-                   
-                
-            
-                    
-    
-               
-            
-                  
 
-
-                
-            
+  
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
 
