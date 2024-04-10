@@ -729,14 +729,14 @@ class deleteCourse(APIView):
             tokens=AdminTokenTable.objects.filter(user_id=userId).all()
             if token_instance is None and tokens is None:
                 return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
-            if id is None:
+            if cid is None:
                 return Response({'error':"Course Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
-            survey=Course_table.objects.filter(course_id=cid).all()
-            if not survey:
+            course=Course_table.objects.filter(course_id=cid).all()
+            if not course:
                 return Response({'error':"Course not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
-            serializer=ProgramSerializer(survey,many=True)
-            survey.delete()
+            serializer=ProgramSerializer(course,many=True)
+            course.delete()
           
             if serializer:
                
