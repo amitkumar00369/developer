@@ -136,7 +136,7 @@ class UserDetails(APIView):
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
             tokens=UserTokenTable.objects.filter(user_id=userId).all()
-            if not tokens and token_instance:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
       
             if id is None:
@@ -186,7 +186,7 @@ class User_profile_update(APIView):
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
             tokens=UserTokenTable.objects.filter(user_id=userId).all()
-            if not tokens and token_instance:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
      
      
@@ -237,9 +237,9 @@ class forgetPassword(APIView):
 
         # Retrieve the token instance from the AdminTokenTable
         try:
-            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
-            tokens=UserTokenTable.objects.filter(user_id=userId).all()
-            if not tokens and token_instance:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).first()
+            tokens=UserTokenTable.objects.filter(user_id=userId).first()
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             data=request.data
 
@@ -609,7 +609,7 @@ class ByCourseName(APIView):
         try:
             token_instance = UserTokenTable.objects.filter(user_id=userId).first()
             tokens = AdminTokenTable.objects.filter(user_id=userId).first()
-            if not tokens and token_instance:
+            if token_instance is None and tokens is None:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
 
             user = CustomUser.objects.filter(id=userId).first()
@@ -669,7 +669,7 @@ class CourseName(APIView):
             token_instance = UserTokenTable.objects.filter(user_id=userId).first()
             tokens=AdminTokenTable.objects.filter(user_id=userId).first()
    
-            if not tokens and token_instance:
+            if token_instance is None and tokens is None:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
             if cid is None:
                 courses = Course_table.objects.all().order_by('course_name')

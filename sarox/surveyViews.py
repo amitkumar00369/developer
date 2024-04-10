@@ -42,7 +42,7 @@ class CreateSurvey(APIView):
         try:
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
             tokens=UserTokenTable.objects.filter(user_id=userId).all()
-            if tokens and token_instance is None:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             
@@ -86,7 +86,7 @@ class getAllSurvey(APIView):
         try:
             token_instance = UserTokenTable.objects.filter(user_id=userId).all()
             tokens=AdminTokenTable.objects.filter(user_id=userId).all()
-            if tokens and token_instance is None:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             if id is None:
@@ -130,7 +130,7 @@ class updateSurvey(APIView):
         try:
             token_instance = UserTokenTable.objects.filter(user_id=userId).all()
             tokens=AdminTokenTable.objects.filter(user_id=userId).all()
-            if tokens and token_instance is None:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             if id is None:
                 return Response({'error':"Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
@@ -177,7 +177,7 @@ class deleteSurvey(APIView):
         try:
             token_instance = UserTokenTable.objects.filter(user_id=userId).all()
             tokens=AdminTokenTable.objects.filter(user_id=userId).all()
-            if not tokens or token_instance:
+            if token_instance is None and tokens is None:
                 return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             if id is None:
                 return Response({'error':"Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
