@@ -2,7 +2,7 @@ from django.urls import path
 from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserLogOut,Imageupload,UserDetails,User_profile_update,WeekProgram,ByCourseName,CourseTable1Reg
 # from django.conf import settings
 # from django.conf.urls.static import static
-from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach
+from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey
 
 
@@ -48,6 +48,10 @@ urlpatterns = [
     path('getAllSurvey',getAllSurvey.as_view()),
     path('updateSurveyById/<int:id>',updateSurvey.as_view()),
     path('deleteSurveyById/<int:id>',deleteSurvey.as_view()),
+    
+    
+    #course
+    path('deleteCourseByCourseId',deleteCourse.as_view()),
 
     
     

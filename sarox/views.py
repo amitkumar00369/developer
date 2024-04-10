@@ -702,7 +702,53 @@ class CourseName(APIView):
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         
+class deleteCourse(APIView):
+    def delete(self,request,cid=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
         
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if id is None:
+                return Response({'error':"Course Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            survey=Course_table.objects.filter(course_id=cid).all()
+            if not survey:
+                return Response({'error':"Course not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            serializer=ProgramSerializer(survey,many=True)
+            survey.delete()
+          
+            if serializer:
+               
+                return Response({'message':'Course deleted successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            else:
+                return Response({'error':serializer.errors},status=400)
+            
+            
+        except Exception as e:
+            return Response({'error':str(e)},status=500)
+
 
             
         
