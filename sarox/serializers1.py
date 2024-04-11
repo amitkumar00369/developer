@@ -5,7 +5,7 @@ from .models1 import SurveyTable
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','name','mobile_no', 'email', 'password','profile_image','Designation','date_joined','level']
+        fields = ['id','name','mobile_no', 'email', 'password','profile_image','Designation','date_joined']
         
 
     def create(self, validated_data):
