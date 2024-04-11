@@ -89,6 +89,7 @@ class getAllSurvey(APIView):
             if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
+            
             if id is None:
                 survey=SurveyTable.objects.all().order_by('-id')
                 
@@ -102,6 +103,54 @@ class getAllSurvey(APIView):
                     
         except Exception as e:
             return Response({'data':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+class getAllTypeSurvey(APIView):
+    def get(self,request,Surv_type=None):
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            if Surv_type is None:
+                return Response({'error':"Survey type required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+         
+            survey=SurveyTable.objects.filter(survey_type=Surv_type).all()
+            if not survey:
+                return Response({'error':"Survey type not found in survey table",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                
+            serializer=SurveySerializer(survey,many=True)
+                
+            if serializer:
+                return Response({'message':'All survey type retrieves successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                
+            else:
+                return Response(serializer.errors,status=404)
+                    
+        except Exception as e:
+            return Response({'data':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
             
             
         
