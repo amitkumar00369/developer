@@ -95,6 +95,7 @@ class Course_table(models.Model):
     
     date = models.DateField(default=timezone.now, blank=True)
     time = models.TimeField(default=timezone.now, blank=True)
+    level=models.CharField(max_length=128,blank=True)
 
     def save(self, *args, **kwargs):
         # Update date and time fields to current date and time on every save
