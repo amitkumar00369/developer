@@ -191,7 +191,7 @@ class updateSurvey(APIView):
             
             if serializer.is_valid():
                 serializer.save()
-                return Response({'message':'Informations updated successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Information updated successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'error':serializer.errors},status=400)
