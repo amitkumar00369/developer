@@ -515,7 +515,7 @@ class WeekProgram(APIView):
 
   
                 prog.course_name = course_name
-                prog.headings = {'heading': [heading], 'subheading': subheading}
+                prog.headings = {"heading": [heading], "subheading":subheading}
                 prog.course_id=prog.course_id
                 prog.save()
 
@@ -561,12 +561,6 @@ class WeekProgram(APIView):
 
             
             
-            
-                        
-                    
-             
-                
-             
 
             
             else:
@@ -752,6 +746,8 @@ class deleteCourse(APIView):
 
             
         
+
+   
     
     
 

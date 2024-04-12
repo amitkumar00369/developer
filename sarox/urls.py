@@ -53,7 +53,7 @@ urlpatterns = [
     
     #course
     path('deleteCourseByCourseId/<int:cid>',deleteCourse.as_view()),
-
+    
     
     
 ] 
