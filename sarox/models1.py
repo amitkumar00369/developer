@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
    
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    profile_image=models.ImageField(upload_to='image/', blank=True,null=True)
+    profile_image=models.CharField(max_length=128,blank=True,null=True,default=None)
     Designation=models.CharField(max_length=80,blank=True)
     level=models.CharField(max_length=128,blank=True)
 
