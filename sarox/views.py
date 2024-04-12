@@ -477,6 +477,7 @@ class Imageupload(APIView):
 
 class WeekProgram(APIView):
     def post(self,request):
+        parser_classes = [MultiPartParser, FormParser]
         token = request.headers.get('Authorization')
 
         if not token:
@@ -515,7 +516,9 @@ class WeekProgram(APIView):
 
   
                 prog.course_name = course_name
-                prog.headings = {"heading": [heading], "subheading":subheading}
+                headings_dict = {"heading": [heading], "subheading": subheading}
+                json_string = json.dumps(headings_dict)
+                prog.headings = json_string
                 prog.course_id=prog.course_id
                 prog.save()
 

@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
    
     email = models.EmailField(unique=True)
     password = models.CharField(max_length=128)
-    profile_image=models.CharField(max_length=128,blank=True)
+    profile_image=models.ImageField(upload_to='image/', blank=True,null=True)
     Designation=models.CharField(max_length=80,blank=True)
     level=models.CharField(max_length=128,blank=True)
 
@@ -85,12 +85,12 @@ class profile_image_table(models.Model):
 
 class Course_table(models.Model):
     id=models.AutoField(primary_key=True)
-    weeks=models.CharField(max_length=20,blank=True,default=None)
+    weeks=models.CharField(max_length=20,blank=True,default=None,null=True)
     text=models.JSONField(default=list,null=True,blank=True)
     heading=models.CharField(max_length=255,default=list)
-    video=models.CharField(max_length=128,blank=True)
-    PPT=models.CharField(max_length=128,blank=True)
-    course_name=models.CharField(max_length=255,blank=True)
+    video=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT=models.FileField(upload_to='pdf/',blank=True,null=True)
+    course_name=models.CharField(max_length=255,blank=True,null=True)
     course_id=models.IntegerField(default=0)
     headings=models.CharField(max_length=255,blank=True)
     
