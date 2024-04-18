@@ -11,6 +11,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_protect 
 import json
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 class UserSignIN(APIView):
@@ -453,7 +454,6 @@ class AdminLogOut(APIView):
 
 # Media section using AWS cloud Storage
 
-from rest_framework.parsers import MultiPartParser, FormParser
 class Imageupload(APIView):
     parser_classes = [MultiPartParser, FormParser]
     

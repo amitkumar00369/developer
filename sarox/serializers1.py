@@ -1,7 +1,7 @@
 # serializers.py
 from rest_framework import serializers
 from .models1 import AdminTables,CustomUser,OTPVerification_TABLE,AdminTokenTable,UserTokenTable,profile_image_table,Course_table,CourseTable1
-from .models1 import SurveyTable
+from .models1 import SurveyTable,videoTable,addThoughts
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -52,7 +52,7 @@ class OTPSerializer(serializers.ModelSerializer):
         
         
         
-# Motor serializer ---------------------------------------------------------------------------------------------------
+
 
 
 
@@ -86,3 +86,14 @@ class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model=SurveyTable
         fields=['id','organisation_name','survey_type','start_survey_date','survey_name','Max_no_of_participants','language','survey_questions']
+        
+        
+class VideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=videoTable
+        fields=['title','video']
+        
+class thoughSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=addThoughts
+        fields=['thought']

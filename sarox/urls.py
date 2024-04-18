@@ -4,6 +4,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 # from django.conf.urls.static import static
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
+from .mail import sendMail,videoUpload,postThought
 
 
 urlpatterns = [
@@ -54,6 +55,10 @@ urlpatterns = [
     #course
     path('deleteCourseByCourseId/<int:cid>',deleteCourse.as_view()),
     
+    
+    path('sendMail',sendMail.as_view()),
+    path('uploadVideo',videoUpload.as_view()),
+    path('postThoughts',postThought.as_view())
     
     
 ] 

@@ -147,12 +147,15 @@ class SurveyTable(models.Model):
         
         
         
-
+class videoTable(models.Model):
+    title=models.TextField(max_length=256,null=True)
+    video=models.FileField(upload_to='videos/', blank=True,null=True)
     
 
     
 
-
+class addThoughts(models.Model):
+    thought=models.TextField(max_length=256)
 
 
 
