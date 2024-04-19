@@ -91,9 +91,9 @@ class SurveySerializer(serializers.ModelSerializer):
 class VideoSerializer(serializers.ModelSerializer):
     class Meta:
         model=videoTable
-        fields=['title','video']
+        fields=['id','title','video']
         
 class thoughSerializer(serializers.ModelSerializer):
     class Meta:
         model=addThoughts
-        fields=['thought']
+        fields=['id','thought']

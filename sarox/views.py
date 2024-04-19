@@ -682,7 +682,7 @@ class CourseName(APIView):
                 
             for cor_name in course_list:
                 Courses=Course_table.objects.filter(course_name=cor_name).first()
-                print('course',Courses)
+                # print('course',Courses)
                    
                 data= {
                     'course_id': Courses.course_id,

@@ -115,6 +115,55 @@ class videoUpload(APIView):
         
         
         
+class getAllVideo(APIView):
+    def get(self, request,id=None):
+        # parser_classes = [MultiPartParser, FormParser]
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+            
+            if not id:
+                videos=videoTable.objects.all().order_by('-id')
+                
+                serializer=VideoSerializer(videos,many=True)
+            elif id:
+                videos=videoTable.objects.filter(id=id).first()
+                
+                serializer=VideoSerializer(videos)
+                
+            if serializer:
+          
+                return Response({'message': 'get video succussfully','data': serializer.data,'status':status.HTTP_200_OK},status=200)
+            else:
+                return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':str(e)},status=500)
+        
+        
+        
         
         
         
@@ -157,3 +206,100 @@ class postThought(APIView):
                 return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'message':str(e)},status=500)
+        
+        
+class getAllThoughts(APIView):
+    def get(self, request,id=None):
+        # parser_classes = [MultiPartParser, FormParser]
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if not id:
+                thought=addThoughts.objects.all().order_by('-id')
+                serializer=thoughSerializer(thought,many=True)
+            elif id:
+                thought=addThoughts.objects.filter(id=id).first()
+                serializer=thoughSerializer(thought)
+            if serializer:
+          
+                return Response({'message': 'get thoughts succussfully','data': serializer.data,'status':status.HTTP_200_OK},status=200)
+            else:
+                return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':str(e)},status=500)
+  
+class deleteThoughts(APIView):
+    def delete(self, request,id=None):
+        # parser_classes = [MultiPartParser, FormParser]
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+        if not id:
+            return Response({'error':"Please enter post ID",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+            
+            thought=addThoughts.objects.filter(id=id).first()
+          
+            if thought is None:
+                return Response({'error':"postId not exist",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
+         
+            serializer=thoughSerializer(thought)
+            thought.delete()
+           
+            if serializer:
+                thought.delete()
+          
+                return Response({'message': 'deleted succussfully','status':status.HTTP_200_OK},status=200)
+            else:
+                return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':str(e)},status=500)
+  
+  
+  
+  

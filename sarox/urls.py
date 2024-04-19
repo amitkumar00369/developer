@@ -4,7 +4,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 # from django.conf.urls.static import static
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
-from .mail import sendMail,videoUpload,postThought
+from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts
 
 
 urlpatterns = [
@@ -13,6 +13,7 @@ urlpatterns = [
     path('user/login',UserLogIn.as_view()),
     path('user/logout',UserLogOut.as_view()),
     path('user/update/profile/<int:id>',User_profile_update.as_view()),
+    path('user/update/profile/',User_profile_update.as_view()),
     path('forgetPassword',forgetPassword.as_view()),
     
     
@@ -22,7 +23,8 @@ urlpatterns = [
     path('admin_login',AdminLogIn.as_view()),
     path('admin/logout',AdminLogOut.as_view()),
     path('getAllCoach',UserDetails.as_view()),
-    path('getCoachbyId<int:id>',UserDetails.as_view()),
+    path('getCoachbyId/<int:id>',UserDetails.as_view()),
+    path('getCoachbyId/',UserDetails.as_view()),
     
     path('deletCoachbyID/<int:id>',DeleteCoach.as_view()),
     
@@ -54,12 +56,18 @@ urlpatterns = [
     
     #course
     path('deleteCourseByCourseId/<int:cid>',deleteCourse.as_view()),
+    path('deleteCourseByCourseId/',deleteCourse.as_view()),
     
     
     path('sendMail',sendMail.as_view()),
     path('uploadVideo',videoUpload.as_view()),
-    path('postThoughts',postThought.as_view())
-    
+    path('postThoughts',postThought.as_view()),
+    path('getAllVideo/<int:id>',getAllVideo.as_view()),
+    path('getAllVideo/',getAllVideo.as_view()),
+    path('getAllThoughts/<int:id>',getAllThoughts.as_view()),
+    path('getAllThoughts/',getAllThoughts.as_view()),
+    path('deleteThoughts/<int:id>',deleteThoughts.as_view()),
+    path('deleteThoughts/',deleteThoughts.as_view())
     
 ] 
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
