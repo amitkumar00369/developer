@@ -161,6 +161,56 @@ class getAllVideo(APIView):
                 return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
             return Response({'message':str(e)},status=500)
+class deleteVideo(APIView):
+    def delete(self, request,id=None):
+        # parser_classes = [MultiPartParser, FormParser]
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+        if not id:
+            return Response({'error':"Please enter post ID",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+            
+            videos=videoTable.objects.filter(id=id).first()
+          
+            if videos is None:
+                return Response({'error':"videos not exist",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
+         
+            serializer=VideoSerializer(videos)
+            videos.delete()
+           
+            if serializer:
+                
+          
+                return Response({'message': 'deleted succussfully','status':status.HTTP_200_OK},status=200)
+            else:
+                return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({'message':str(e)},status=500)
+
         
         
         
