@@ -96,4 +96,4 @@ class VideoSerializer(serializers.ModelSerializer):
 class thoughSerializer(serializers.ModelSerializer):
     class Meta:
         model=addThoughts
-        fields=['id','thought','data','time']
+        fields=['id','thought','date','time']
