@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/logout',AdminLogOut.as_view()),
     path('getAllCoach',UserDetails.as_view()),
     path('getCoachbyId/<int:id>',UserDetails.as_view()),
-    path('getCoachbyId/',UserDetails.as_view()),
+    
     
     path('deletCoachbyID/<int:id>',DeleteCoach.as_view()),
     
