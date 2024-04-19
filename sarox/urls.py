@@ -4,7 +4,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 # from django.conf.urls.static import static
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
-from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts,deleteVideo
+from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts,deleteVideo,updateVideo
 
 
 urlpatterns = [
@@ -69,7 +69,9 @@ urlpatterns = [
     path('deleteThoughts/<int:id>',deleteThoughts.as_view()),
     path('deleteThoughts/',deleteThoughts.as_view()),
     path('deleteVideos/<int:id>',deleteVideo.as_view()),
-    path('deleteVideos/',deleteVideo.as_view())
+    path('deleteVideos/',deleteVideo.as_view()),
+    path('updateVideos/<int:id>',updateVideo.as_view()),
+    path('updateVideos/',updateVideo.as_view())
     
     
 ] 

@@ -150,12 +150,29 @@ class SurveyTable(models.Model):
 class videoTable(models.Model):
     title=models.TextField(max_length=256,null=True)
     video=models.FileField(upload_to='videos/', blank=True,null=True)
+    date = models.DateField(default=timezone.now, blank=True)
+    time = models.TimeField(default=timezone.now, blank=True)
+    
+    
+    def save(self, *args, **kwargs):
+        # Update date and time fields to current date and time on every save
+        self.date = timezone.now().date()
+        self.time = timezone.now().time()
+        super().save(*args, **kwargs)
     
 
     
 
 class addThoughts(models.Model):
     thought=models.TextField(max_length=256)
+    date = models.DateField(default=timezone.now, blank=True)
+    time = models.TimeField(default=timezone.now, blank=True)
+    
+    def save(self, *args, **kwargs):
+        # Update date and time fields to current date and time on every save
+        self.date = timezone.now().date()
+        self.time = timezone.now().time()
+        super().save(*args, **kwargs)
 
 
 
