@@ -390,7 +390,7 @@ class deleteThoughts(APIView):
             thought.delete()
            
             if serializer:
-                thought.delete()
+                
           
                 return Response({'message': 'deleted succussfully','status':status.HTTP_200_OK},status=200)
             else:
