@@ -5,6 +5,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
 from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts,deleteVideo,updateVideo
+from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram
 
 
 urlpatterns = [
@@ -71,7 +72,17 @@ urlpatterns = [
     path('deleteVideos/<int:id>',deleteVideo.as_view()),
     path('deleteVideos/',deleteVideo.as_view()),
     path('updateVideos/<int:id>',updateVideo.as_view()),
-    path('updateVideos/',updateVideo.as_view())
+    path('updateVideos/',updateVideo.as_view()),
+    
+    
+    
+    path('CreateallProgram',CreateallProgram.as_view()),
+    path('getAllProgram/<int:pid>',getAllProgram.as_view()),
+    path('getAllProgram/',getAllProgram.as_view()),
+    path('deleteProgram/<int:pid>',deleteProgram.as_view()),
+    path('deleteProgram/',deleteProgram.as_view()),
+    path('updateProgram/<int:pid>',updateProgram.as_view()),
+    path('updateProgram/',updateProgram.as_view()),
     
     
 ] 

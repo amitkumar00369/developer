@@ -181,4 +181,25 @@ class addThoughts(models.Model):
 
 
     
+class allProgramTable(models.Model):
+    title=models.TextField(max_length=256,null=True)
+    video1=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT1=models.FileField(upload_to='pdf/',blank=True,null=True)
+    video2=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT2=models.FileField(upload_to='pdf/',blank=True,null=True)
+    video3=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT3=models.FileField(upload_to='pdf/',blank=True,null=True)
+    video4=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT4=models.FileField(upload_to='pdf/',blank=True,null=True)
+    video5=models.FileField(upload_to='videos/', blank=True,null=True)
+    PPT5=models.FileField(upload_to='pdf/',blank=True,null=True)
+
+    date = models.DateField(default=timezone.now, blank=True)
+    time = models.TimeField(default=timezone.now, blank=True)
     
+    
+    def save(self, *args, **kwargs):
+        # Update date and time fields to current date and time on every save
+        self.date = timezone.now().date()
+        self.time = timezone.now().time()
+        super().save(*args, **kwargs)

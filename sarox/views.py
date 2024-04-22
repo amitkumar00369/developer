@@ -669,7 +669,7 @@ class CourseName(APIView):
             if token_instance is None and tokens is None:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
             if cid is None:
-                courses = Course_table.objects.all().order_by('course_name')
+                courses = Course_table.objects.all().order_by('-course_name')
                 
 
            
@@ -692,7 +692,7 @@ class CourseName(APIView):
                 datas.append(data)
                         
                    
-            return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            return Response({'message':'All courses retrieves','data':datas,'courses_name':course_list,'No_of_courses':len(course_list),'status':status.HTTP_200_OK},status.HTTP_200_OK)
 
   
         except Exception as e:

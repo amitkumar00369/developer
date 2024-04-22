@@ -1,7 +1,7 @@
 # serializers.py
 from rest_framework import serializers
 from .models1 import AdminTables,CustomUser,OTPVerification_TABLE,AdminTokenTable,UserTokenTable,profile_image_table,Course_table,CourseTable1
-from .models1 import SurveyTable,videoTable,addThoughts
+from .models1 import SurveyTable,videoTable,addThoughts,allProgramTable
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
@@ -97,3 +97,10 @@ class thoughSerializer(serializers.ModelSerializer):
     class Meta:
         model=addThoughts
         fields=['id','thought','date','time']
+        
+        
+        
+class allProgramSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=allProgramTable
+        fields=['id','title','video1','video2','video3','video4','video5','PPT1','PPT2','PPT3','PPT4','PPT5','date','time']
