@@ -96,13 +96,47 @@ class getAllProgram(APIView):
                 return Response({'message': 'get programs successfully', 'data': serializer.data,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
             elif pid:
                 program = allProgramTable.objects.filter(id=pid).first()
-                print(program)
-                if program:
-                    serializer = allProgramSerializer(program)
-                    return Response({'message': 'get program successfully', 'data': serializer.data,
-                                     'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
-                else:
-                    return Response({'message': 'program not found', 'status': status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+                if not program:
+                    return Response({'message': 'Program not found','status':status.HTTP_404_NOT_FOUND}, status=status.HTTP_404_NOT_FOUND)
+                    
+                program_data = {}
+                
+                for i in range(1, 6):
+                    ppt_key = f'PPT{i}'
+                    
+                    ppt_value = getattr(program, ppt_key)
+       
+                    if ppt_value:
+                        if hasattr(ppt_value, 'url'):
+                            ppt_url = ppt_value.url  # Assuming it's a URLField
+                            program_data[ppt_key] = ppt_url
+                        elif hasattr(ppt_value, 'path'):
+                            ppt_path = ppt_value.path  # Assuming it's a FilePathField
+                            program_data[ppt_key] = ppt_path
+                        else:
+                            program_data[ppt_key] = None
+                    else:
+                        program_data[ppt_key] = None
+                program_data1={}      
+                for i in range(1, 6):
+                    ppt_key = f'video{i}'
+                    
+                    ppt_value = getattr(program, ppt_key)
+        
+                    if ppt_value:
+                        if hasattr(ppt_value, 'url'):
+                            ppt_url = ppt_value.url  # Assuming it's a URLField
+                            program_data1[ppt_key] = ppt_url
+                        elif hasattr(ppt_value, 'path'):
+                            ppt_path = ppt_value.path  # Assuming it's a FilePathField
+                            program_data1[ppt_key] = ppt_path
+                        else:
+                            program_data1[ppt_key] = None
+                    else:
+                        program_data1[ppt_key] = None
+
+                return Response({'message': 'get program successfully','id':program.id, 'video': program_data1,'ppts':program_data, 'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
+
             else:
                 return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
         except Exception as e:
