@@ -92,8 +92,64 @@ class getAllProgram(APIView):
 
             if not pid:
                 programs = allProgramTable.objects.all()
-                serializer = allProgramSerializer(programs, many=True)
-                return Response({'message': 'get programs successfully', 'data': serializer.data,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
+
+                response_data = []
+                for program in programs:
+                    
+          
+                    if program:
+                        program_data = {}
+                        program_data1={} 
+                        for i in range(1, 6):
+                            ppt_key = f'PPT{i}'
+                            ppt_value = getattr(program, ppt_key)
+                            if ppt_value:
+                                if hasattr(ppt_value, 'url'):
+                                    ppt_url = ppt_value.url  # Assuming it's a URLField
+                                    program_data[ppt_key] = ppt_url
+                                elif hasattr(ppt_value, 'path'):
+                                    ppt_path = ppt_value.path  # Assuming it's a FilePathField
+                                    program_data[ppt_key] = ppt_path
+                                else:
+                                    program_data[ppt_key] = None
+                            else:
+                                program_data[ppt_key] = None
+                        for i in range(1, 6):
+                            ppt_key = f'video{i}'
+                            ppt_value = getattr(program, ppt_key)
+                            if ppt_value:
+                                if hasattr(ppt_value, 'url'):
+                                    ppt_url = ppt_value.url  # Assuming it's a URLField
+                                    program_data1[ppt_key] = ppt_url
+                                elif hasattr(ppt_value, 'path'):
+                                    ppt_path = ppt_value.path  # Assuming it's a FilePathField
+                                    program_data1[ppt_key] = ppt_path
+                                else:
+                                    program_data1[ppt_key] = None
+                            else:
+                                program_data1[ppt_key] = None
+                        data ={
+                        'id': program.id,
+                        'video': program_data1,
+                        'ppt': program_data
+                    
+                        }
+                       
+                        response_data.append(data)
+                        
+                    else:
+                        pass
+                return Response({'message': 'get programs successfully', 'data':response_data, 'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
+         
+                
+                    
+                
+        
+
+                       
+                    
+                # serializer = allProgramSerializer(programs, many=True)
+                # return Response({'message': 'get programs successfully', 'data': serializer.data,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
             elif pid:
                 program = allProgramTable.objects.filter(id=pid).first()
                 if not program:
@@ -137,8 +193,7 @@ class getAllProgram(APIView):
 
                 return Response({'message': 'get program successfully','id':program.id, 'video': program_data1,'ppts':program_data, 'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
 
-            else:
-                return Response({'message': 'Invalid data', 'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+         
         except Exception as e:
             return Response({'message': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
