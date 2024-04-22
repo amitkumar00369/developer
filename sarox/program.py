@@ -130,8 +130,10 @@ class getAllProgram(APIView):
                                 program_data1[ppt_key] = None
                         data ={
                         'id': program.id,
+                        'title':program.title,
                         'video': program_data1,
-                        'ppt': program_data
+                        'ppt': program_data,
+                        'date':program.date,
                     
                         }
                        
@@ -191,7 +193,7 @@ class getAllProgram(APIView):
                     else:
                         program_data1[ppt_key] = None
 
-                return Response({'message': 'get program successfully','id':program.id, 'video': program_data1,'ppts':program_data, 'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
+                return Response({'message': 'get program successfully','id':program.id,'title':program.title, 'video': program_data1,'ppts':program_data, 'date':program.date,'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
 
          
         except Exception as e:
