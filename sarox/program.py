@@ -351,7 +351,7 @@ class AssignCourseByemail(APIView):
                     user.Course_name=[]
                     user.save()
                     serializer=UserSerializer(user)
-                    return Response({'message': 'Assigned motors to user', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    return Response({'message': 'Assigne course to coach', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
                 
                 if token_user:
                     # token_user.delete()
@@ -360,7 +360,7 @@ class AssignCourseByemail(APIView):
                     user.Course_name=[]
                     user.save()
                     serializer=UserSerializer(user)
-                    return Response({'message': 'Assigned motors to user','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    return Response({'message': 'Assigne course to coach','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
                     
 
                 
