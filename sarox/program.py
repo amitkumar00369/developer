@@ -463,7 +463,7 @@ class GetAssignCourseofCoach(APIView):
                     user.Course_name=[]
                     user.save()
                     serializer=UserSerializer(user)
-                    return Response({'message': 'Assigned motors to user', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    return Response({'message': 'Assign course to coach', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
                 
                 if token_user:
                     # token_user.delete()
@@ -472,7 +472,7 @@ class GetAssignCourseofCoach(APIView):
                     user.Course_name=[]
                     user.save()
                     serializer=UserSerializer(user)
-                    return Response({'message': 'Assigned motors to user','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    return Response({'message': 'Assign course to coach','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
                     
 
                 
@@ -505,7 +505,7 @@ class GetAssignCourseofCoach(APIView):
             
                
 
-                return Response({'message': 'Get all course of coach', 'data': course_list,'status': status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message': 'Get all course of coach', 'data': course_list,'name':set(courses_name_list),'status': status.HTTP_200_OK},status.HTTP_200_OK)
       
         except user.DoesNotExist:
             return Response({'error':'User not found','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
