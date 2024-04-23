@@ -459,33 +459,22 @@ class GetAssignCourseofCoach(APIView):
                 
                 
             if courses_id:
-                datas=[]
+                course_dict = {}  # Dictionary to store course data
 
-        
-            
                 for cor_id in courses_id:
-                    course = Course_table.objects.filter(course_id=cor_id).all()
-                    for cor in course:
-                        
-                        data= {
-                         'course_id': cor.course_id,
-                         'course_name': cor.course_name,
-                        'date': cor.date
-                        }
-                        
-                        datas.append(data)
-                        
-                   
-                
-              
-                
+                    course = Course_table.objects.filter(course_id=cor_id).first()
         
-                 
-                        
-                   
-                return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    if course:  # Check if course exists
+                        if course.course_id not in course_dict:  # Check if course ID is not in dictionary
+                            course_dict[course.course_id] = {
+                            'course_name': course.course_name,
+                            'date': course.date
+                            }
 
-                    
+    # Extract values from the dictionary to get the final datas list
+                datas = [{'course_id': key, **value} for key, value in course_dict.items()]
+
+                return Response({'message': 'All courses retrieved', 'data': datas, 'status': status.HTTP_200_OK}, status=status.HTTP_200_OK)
                 
 
                     
