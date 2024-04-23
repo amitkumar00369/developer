@@ -5,7 +5,7 @@ from .models1 import SurveyTable,videoTable,addThoughts,allProgramTable
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id','name','mobile_no', 'email', 'password','profile_image','Designation','date_joined','level']
+        fields = ['id','name','mobile_no', 'email', 'password','profile_image','Designation','date_joined','level','No_of_Course','Course_id','Course_name']
         
 
     def create(self, validated_data):
@@ -73,12 +73,12 @@ class ImageSerializer(serializers.ModelSerializer):
 class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model=Course_table
-        fields=['id','weeks','PPT','headings','video','date','time']
+        fields=['id','weeks','PPT','headings','video','date','time','course_name','course_id']
         
 class CT1Serializer(serializers.ModelSerializer):
     class Meta:
         model=CourseTable1
-        fields=['weeks','PPT','headings','video','date','time']
+        fields=['weeks','PPT','headings','course_name','course_id','video','date','time']
         
         
 

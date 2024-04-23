@@ -14,6 +14,10 @@ class CustomUser(AbstractUser):
     profile_image=models.CharField(max_length=128,blank=True,null=True,default=None)
     Designation=models.CharField(max_length=80,blank=True)
     level=models.CharField(max_length=128,blank=True)
+    No_of_Course=models.CharField(max_length=255, default='')
+    Course_id=models.CharField(max_length=255, default=list)
+    Course_name=models.CharField(max_length=255, default=list)
+    
 
     
    
@@ -90,7 +94,7 @@ class Course_table(models.Model):
     heading=models.CharField(max_length=255,default=list)
     video=models.FileField(upload_to='videos/', blank=True,null=True)
     PPT=models.FileField(upload_to='pdf/',blank=True,null=True)
-    course_name=models.CharField(max_length=255,blank=True,null=True)
+    course_name=models.CharField(max_length=255,default='',blank=True,null=True)
     course_id=models.IntegerField(default=0)
     headings=models.CharField(max_length=255,blank=True)
     

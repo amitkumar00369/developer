@@ -297,4 +297,224 @@ class updateProgram(APIView):
             
         except Exception as e:
             return Response({'error':str(e)},status=500)
+        
+        
+        
+#Assign Courses by course id
+class AssignCourseByemail(APIView):
+    def post(self,request,email=None):
+       
+        
+        token = request.headers.get('Authorization')
 
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+            if not email:
+                return Response({'error':'email required','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            user=CustomUser.objects.filter(email=email).first()
+        
+  
+
+            if user is None:
+                return Response({'error':'user not defined','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+          
+      
+            courses_id=request.data.get('courses_id')
+            if not courses_id:
+                token_user=UserTokenTable.objects.filter(user_id=user.id).all()
+                print('token',token_user)
+                if not token_user:
+                    user.No_of_Course=len(courses_id)
+                    user.Course_id=courses_id
+                    user.Course_name=[]
+                    user.save()
+                    serializer=UserSerializer(user)
+                    return Response({'message': 'Assigned motors to user', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                
+                if token_user:
+                    # token_user.delete()
+                    user.No_of_Course=len(courses_id)
+                    user.Course_id=courses_id
+                    user.Course_name=[]
+                    user.save()
+                    serializer=UserSerializer(user)
+                    return Response({'message': 'Assigned motors to user','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    
+
+                
+            if courses_id:
+
+                
+                course_list = []  # List to store the retrieved motors
+                courses_name_list=[] #list to store the retrieve motors name
+            
+                for cor_id in courses_id:
+                    course = Course_table.objects.filter(course_id=cor_id).all()
+                    print('courses',course)
+                
+
+                    if course:
+                        user.No_of_Course=len(courses_id)
+                        
+                        user.Course_id=courses_id
+              
+                        user.save()
+                    
+                        
+                        
+                        serializer = ProgramSerializer(course,many=True)
+                        course_list.append(serializer.data)
+                        for name in course:
+                            
+                            course_name=name.course_name
+                            courses_name_list.append(course_name)
+                    if not course:
+                        continue
+     
+           
+                user.Course_name=set(courses_name_list)
+  
+                user.save()
+               
+
+                return Response({'message': 'Courses assign for coach', 'data': course_list, 'status': status.HTTP_200_OK},status.HTTP_200_OK)
+      
+        except user.DoesNotExist:
+            return Response({'error':'User not found','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        except CustomUser.DoesNotExist:
+            return Response({'error':'internal servere error','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Course_table.DoesNotExist:
+            return Response({'error':'internal servere error','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error':'internal server error','data':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class GetAssignCourseofCoach(APIView):
+    def get(self,request,email=None):
+       
+        
+        token = request.headers.get('Authorization')
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+            if not email:
+                return Response({'error':'email required','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            user=CustomUser.objects.filter(email=email).first()
+        
+  
+
+            if user is None:
+                return Response({'error':'user not defined','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+          
+      
+            courses_id=json.loads(user.Course_id)
+            if not courses_id:
+                token_user=UserTokenTable.objects.filter(user_id=user.id).all()
+                print('token',token_user)
+                if not token_user:
+                    user.No_of_Course=len(courses_id)
+                    user.Course_id=courses_id
+                    user.Course_name=[]
+                    user.save()
+                    serializer=UserSerializer(user)
+                    return Response({'message': 'Assigned motors to user', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                
+                if token_user:
+                    # token_user.delete()
+                    user.No_of_Course=len(courses_id)
+                    user.Course_id=courses_id
+                    user.Course_name=[]
+                    user.save()
+                    serializer=UserSerializer(user)
+                    return Response({'message': 'Assigned motors to user','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                    
+
+                
+            if courses_id:
+
+                
+                course_list = []  # List to store the retrieved motors
+                courses_name_list=[] #list to store the retrieve motors name
+            
+                for cor_id in courses_id:
+                    course = Course_table.objects.filter(course_id=cor_id).all()
+                    print('courses',course)
+                
+
+                    if course:
+ 
+                    
+                        
+                        
+                        serializer = ProgramSerializer(course,many=True)
+                        course_list.append(serializer.data)
+                        for name in course:
+                            
+                            course_name=name.course_name
+                            courses_name_list.append(course_name)
+                    if not course:
+                        continue
+     
+           
+            
+               
+
+                return Response({'message': 'Get all course of coach', 'data': course_list,'status': status.HTTP_200_OK},status.HTTP_200_OK)
+      
+        except user.DoesNotExist:
+            return Response({'error':'User not found','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+        except CustomUser.DoesNotExist:
+            return Response({'error':'internal servere error','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Course_table.DoesNotExist:
+            return Response({'error':'internal servere error','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            return Response({'error':'internal server error','data':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+          
