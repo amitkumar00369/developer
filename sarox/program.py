@@ -455,57 +455,56 @@ class GetAssignCourseofCoach(APIView):
       
             courses_id=json.loads(user.Course_id)
             if not courses_id:
-                token_user=UserTokenTable.objects.filter(user_id=user.id).all()
-                print('token',token_user)
-                if not token_user:
-                    user.No_of_Course=len(courses_id)
-                    user.Course_id=courses_id
-                    user.Course_name=[]
-                    user.save()
-                    serializer=UserSerializer(user)
-                    return Response({'message': 'Assign course to coach', 'data':serializer.data,'status': status.HTTP_200_OK}, status.HTTP_200_OK)
+                return Response({'message':'please assign course to coach','status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
-                if token_user:
-                    # token_user.delete()
-                    user.No_of_Course=len(courses_id)
-                    user.Course_id=courses_id
-                    user.Course_name=[]
-                    user.save()
-                    serializer=UserSerializer(user)
-                    return Response({'message': 'Assign course to coach','data':serializer.data, 'status': status.HTTP_200_OK}, status.HTTP_200_OK)
-                    
-
                 
             if courses_id:
+                datas=[]
 
-                
-                course_list = []  # List to store the retrieved motors
-                courses_name_list=[] #list to store the retrieve motors name
+        
             
                 for cor_id in courses_id:
                     course = Course_table.objects.filter(course_id=cor_id).all()
-                    print('courses',course)
+                    for cor in course:
+                        
+                        data= {
+                         'course_id': cor.course_id,
+                         'course_name': cor.course_name,
+                        'date': cor.date
+                        }
+                        
+                        datas.append(data)
+                        
+                   
+                
+              
+                
+        
+                 
+                        
+                   
+                return Response({'message':'All courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+
+                    
                 
 
-                    if course:
- 
                     
                         
                         
-                        serializer = ProgramSerializer(course,many=True)
-                        course_list.append(serializer.data)
-                        for name in course:
+                        # serializer = ProgramSerializer(course,many=True)
+                        # course_list.append(serializer.data)
+                        # for name in course:
                             
-                            course_name=name.course_name
-                            courses_name_list.append(course_name)
-                    if not course:
-                        continue
+                        #     course_name=name.course_name
+                        #     courses_name_list.append(course_name)
+                    # if not course:
+                    #     continue
      
            
             
                
 
-                return Response({'message': 'Get all course of coach', 'data': course_list,'course_name':set(courses_name_list),'status': status.HTTP_200_OK},status.HTTP_200_OK)
+                # return Response({'message': 'Get all course of coach', 'data': course_list,'course_name':set(courses_name_list),'status': status.HTTP_200_OK},status.HTTP_200_OK)
       
         except user.DoesNotExist:
             return Response({'error':'User not found','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
