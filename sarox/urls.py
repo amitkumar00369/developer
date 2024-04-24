@@ -5,7 +5,7 @@ from .views import UserSignIN,UserLogIn,AdminSignIN,AdminLogIn,AdminLogOut,UserL
 from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forgetPassword,CourseName,DeleteCoach,deleteCourse
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
 from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts,deleteVideo,updateVideo
-from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram,AssignCourseByemail,GetAssignCourseofCoach
+from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram,AssignCourseByemail,GetAssignCourseofCoach,activeCourse
 
 
 urlpatterns = [
@@ -90,6 +90,11 @@ urlpatterns = [
     path('AssignCourseByemail/',AssignCourseByemail.as_view()),
     path('GetAssignCourseofCoach/<str:email>',GetAssignCourseofCoach.as_view()),
     path('GetAssignCourseofCoach/',GetAssignCourseofCoach.as_view()),
+    
+    path('activeCourse/<int:cid>/<str:week>',activeCourse.as_view()),
+    path('activeCourse//<str:week>',activeCourse.as_view()),
+    path('activeCourse/',activeCourse.as_view()),
+    path('activeCourse/<int:cid>/',activeCourse.as_view()),
     
     
 ] 

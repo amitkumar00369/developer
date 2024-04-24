@@ -73,7 +73,7 @@ class ImageSerializer(serializers.ModelSerializer):
 class ProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model=Course_table
-        fields=['id','weeks','PPT','headings','video','date','time','course_name','course_id']
+        fields=['id','weeks','PPT','headings','video','date','time','course_name','course_id','active']
         
 class CT1Serializer(serializers.ModelSerializer):
     class Meta:
