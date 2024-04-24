@@ -35,7 +35,7 @@ class UserSignIN(APIView):
                 )
                 email.attach_file('unnamed.png')
                 email.attach_file('boy1.jpg')
-                email.attach_file('Techahead_resume.pdf')    
+                
                 email.send()
                 
                 return Response({'message':'User has been created successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
