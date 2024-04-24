@@ -12,6 +12,10 @@ from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_protect 
 import json
 from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.mail import send_mail
+from rest_framework.parsers import MultiPartParser, FormParser
+from django.core.mail import EmailMessage
+from PIL import Image
 
 
 class UserSignIN(APIView):
@@ -20,7 +24,19 @@ class UserSignIN(APIView):
             serializer=UserSerializer(data=request.data)
             
             if serializer.is_valid():
-                serializer.save()
+                user=serializer.save()
+                google_form_link = "https://docs.google.com/forms/d/e/1FAIpQLSf3tbsAaZZfTNU_4mGGOL9l-Hd0U7rXeUPW1PwI1kPfB65vFw/viewform"
+                email=EmailMessage(
+                'This mail recieved from vijay johar bussiness pvt Ltd.',
+                f'Please fill the form:- {google_form_link}',
+                'amitraazec53@gmail.com',  # Replace with your sender email address
+                [user.email],  # Extract the email address from the user instance
+                # fail_silently=False,
+                )
+                email.attach_file('unnamed.png')
+                email.attach_file('boy1.jpg')
+                email.attach_file('Techahead_resume.pdf')    
+                email.send()
                 
                 return Response({'message':'User has been created successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             

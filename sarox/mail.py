@@ -18,8 +18,7 @@ from PIL import Image
 from django.http import JsonResponse
 from .models1 import addThoughts
 from .serializers1 import thoughSerializer
-class sendMail(APIView):
-    
+class sendMail(APIView):   
     def post(self, request):
         parser_classes = [MultiPartParser, FormParser]
         token = request.headers.get('Authorization')
