@@ -555,12 +555,10 @@ class activeCourse(APIView):
                     course.active=False
                     course.save()
                     
-                if course.active==False:
-                    
+                else:
                     course.active=True
                     course.save()
-                else:
-                    continue
+                
                 
             return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
