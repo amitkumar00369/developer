@@ -560,7 +560,7 @@ class activeCourse(APIView):
                     course.save()
                 
                 
-            return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
         except Exception as e:
             return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
