@@ -512,7 +512,6 @@ class GetAssignCourseofCoach(APIView):
 class activeCourse(APIView):
     def put(self,request,cid=None,week=None):
         token = request.headers.get('Authorization')
-
         if not token:
             raise AuthenticationFailed('Token is required for this operation')
 
@@ -549,18 +548,21 @@ class activeCourse(APIView):
             
             for cor in courses:
                 
-                course=Course_table.objects.filter(weeks=week).first()
+                course=Course_table.objects.filter(weeks=week,course_id=cid).first()
                 
-                if not course:
-                    return Response({'error':"week name not found in this course",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
                 if course.active==True:
                     course.active=False
                     course.save()
-                else:
+                    
+                if course.active==False:
                     
                     course.active=True
                     course.save()
-                return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                else:
+                    continue
+                
+            return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
         except Exception as e:
             return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
