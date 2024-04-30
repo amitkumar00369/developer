@@ -531,36 +531,39 @@ class activeCourse(APIView):
 
         # Retrieve the token instance from the AdminTokenTable
         try:
+            actives=request.data.get('actives')
+            if actives is None:
+                return Response({'error':"boolean value in actives not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
             token_instance = UserTokenTable.objects.filter(user_id=userId).all()
             tokens=AdminTokenTable.objects.filter(user_id=userId).all()
             if token_instance is None and tokens is None:
                 return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             if not cid:
                 return Response({'error':"Entred course id",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
-            
-            courses=Course_table.objects.filter(course_id=cid).all()
-            
-            if not courses:
-                return Response({'error':"Course not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             if not week:
                 return Response({'error':"Entered week name",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+            course=Course_table.objects.filter(weeks=week,course_id=cid).first()
+            
+            if not course:
+                return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
                 
             
-            for cor in courses:
+          
                 
-                course=Course_table.objects.filter(weeks=week,course_id=cid).first()
+ 
                 
-                
-                if course.active==True:
-                    course.active=False
-                    course.save()
+            course.active=actives
+            course.save()
                     
-                else:
-                    course.active=True
-                    course.save()
                 
                 
-                return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+               
+                
+                
+            return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
         except Exception as e:
             return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
