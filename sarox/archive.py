@@ -76,6 +76,8 @@ class archiveCourses(APIView):
                 print(courses)
                 if count==2:
                     continue
+                if False in bool_val:
+                    continue
                 for course in courses:
                     print(course)
                     

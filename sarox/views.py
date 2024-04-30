@@ -29,7 +29,7 @@ class UserSignIN(APIView):
                 email=EmailMessage(
                 'This mail recieved from vijay johar bussiness pvt Ltd.',
                 f'Please fill the form:- {google_form_link}',
-                'amitraazec53@gmail.com',  # Replace with your sender email address
+                'email@progrowth.coach',  # Replace with your sender email address
                 [user.email],  # Extract the email address from the user instance
                 # fail_silently=False,
                 )
@@ -633,11 +633,21 @@ class ByCourseName(APIView):
                 program = Course_table.objects.all().order_by('-id')
                 course_name=set(cor.course_name for cor in program)
                 course_id=set(cor.course_id for cor in program)
+                
             else:
                 program = Course_table.objects.filter(course_id=cid).all()
                 course_name=set(cor.course_name for cor in program)
                 course_id=set(cor.course_id for cor in program)
-                
+                bool_value=set(cor.active for cor in program)
+                count=len(bool_value)
+                if count==1:
+                    if False in bool_value:
+                        
+                        value=False
+                    else:
+                        value=True
+                else:
+                    value=False
 
                 
                 # heading=[prog.heading for prog in program]
@@ -649,7 +659,7 @@ class ByCourseName(APIView):
             serializer = ProgramSerializer(program, many=True) 
         
             # Pass data to serializer
-            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course_name,'course_id':course_id}}, status=status.HTTP_200_OK)
+            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course_name,'course_id':course_id,'archive':value}}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
