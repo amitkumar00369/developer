@@ -86,8 +86,6 @@ class archiveCourses(APIView):
                         
                         if course.course_id not in courseId:
                     
-               
-                    
                             course.archive=True
                             course.save()
                             data= {

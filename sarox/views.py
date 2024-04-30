@@ -651,7 +651,7 @@ class ByCourseName(APIView):
                     else:
                         for course in program:
                             course.archive=True
-                            value=course.archive=False
+                            value=course.archive=True
                             course.save()
                        
                 else:
