@@ -23,8 +23,11 @@ from .serializers1 import thoughSerializer,allProgramSerializer
 
 
 class archiveCourses(APIView):
-    def get(self, request):
+    def get(self, request,email=None):
         token = request.headers.get('Authorization')
+        if email is None:
+            return Response({'error':'email required','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+    
 
         if not token:
             raise AuthenticationFailed('Token is required for this operation')
@@ -49,67 +52,64 @@ class archiveCourses(APIView):
    
             if token_instance is None and tokens is None:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user=CustomUser.objects.filter(email=email).first()
+            if not user:
+                return Response({'error':'User not found','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+            courses_id=json.loads(user.Course_id)
            
-            courses = Course_table.objects.all().order_by('-course_name')
+            # courses = Course_table.objects.all().order_by('-course_name')
             
             
                 
             
             data = {}
             datas=[]
+           
             courseId=[]
-            for course in courses:
-                if course.active==True:
-                    
-                    if course.course_id not in courseId:
-                        
-                    
-                        course.archive=True
-                        course.save()
-                        data= {
-                        'course_id': course.course_id,
-                        'course_name': course.course_name,
-                        'date': course.date
-                        }
-                        datas.append(data)
-                        value=course.archive
-                        courseId.append(course.course_id)
-                    else:
-                        course.archive=True
-                        course.save()
-                        continue
-                        
-                    
-                    
-                else:
+            
+            for id in courses_id:
+                courses=Course_table.objects.filter(course_id=id).all()
+                bool_val=set(cor.active for cor in courses)
+                count=len(bool_val)
+                print(courses)
+                if count==2:
                     continue
-                
+                for course in courses:
+                    print(course)
                     
                     
-                
+                    if course.active==True:
+                        
+                        if course.course_id not in courseId:
+                    
+               
+                    
+                            course.archive=True
+                            course.save()
+                            data= {
+                            'course_id': course.course_id,
+                            'course_name': course.course_name,
+                            'date': course.date
+                            }
+                            datas.append(data)
+                            value=course.archive
+                            courseId.append(course.course_id)
+                        else:
+                            continue
+                      
+                    elif course.active==False:
+                        continue
+                    
+                    else:
+                        continue
+
+                    
                 
 
-           
-                    # data = {}
-                    # seen_course_names = set(cor.course_name for cor in courses)  # Keep track of seen course names
-                    # course_list=list(seen_course_names)
-                
-                
-                    # datas=[]
-                
-            # for cor_name in course_list:
-            #     Courses=Course_table.objects.filter(course_name=cor_name).first()
-            #     # print('course',Courses)
-                   
-            #     data= {
-            #         'course_id': Courses.course_id,
-            #         'course_name': Courses.course_name,
-            #         'date': Courses.date
-            #         }
-            #     datas.append(data)
-                        
-                   
-            return Response({'message':'All archive courses retrieves','data':datas,'archive':value,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            print(datas)  
+            return Response({'message':'All archive courses retrieves','data':datas,'archives':value,'status':status.HTTP_200_OK},status.HTTP_200_OK)
 
   
         except Exception as e:

@@ -92,13 +92,14 @@ urlpatterns = [
     path('GetAssignCourseofCoach/<str:email>',GetAssignCourseofCoach.as_view()),
     path('GetAssignCourseofCoach/',GetAssignCourseofCoach.as_view()),
     
-    path('activeCourse/<int:cid>/<str:week>',activeCourse.as_view()),
-    path('activeCourse//<str:week>',activeCourse.as_view()),
+    path('activeCourse/<str:email>/<int:cid>/<str:week>',activeCourse.as_view()),
+    path('activeCourse/<str:email>//<str:week>',activeCourse.as_view()),
+    path('activeCourse//<int:cid>/<str:week>',activeCourse.as_view()),
     path('activeCourse/',activeCourse.as_view()),
-    path('activeCourse/<int:cid>/',activeCourse.as_view()),
-    path('archiveCourse/<int:cid>',archiveCourse.as_view()),
-    path('archiveCourse/',archiveCourse.as_view()),
-    path('archiveCourses',archiveCourses.as_view()),
+    path('activeCourse/<str:email>/<int:cid>/',activeCourse.as_view()),
+    path('archiveCourses/<str:email>',archiveCourses.as_view()),
+    path('archiveCourses/',archiveCourses.as_view()),
+    
     
     
 ] 
