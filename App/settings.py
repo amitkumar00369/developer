@@ -239,8 +239,8 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587  # or your SMTP server's port
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'amitraazec53@gmail.com'
-EMAIL_HOST_PASSWORD = 'jurm sklb gpnx rncb'
+EMAIL_HOST_USER = 'email@progrowth.coach'
+EMAIL_HOST_PASSWORD = 'bsoq pafe nmix avuu'
 
 # import os
 # MEDIA_URL = '/media/'

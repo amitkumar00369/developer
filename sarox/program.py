@@ -568,7 +568,69 @@ class activeCourse(APIView):
     
                 
                 
+class archiveCourse(APIView):
+    def get(self,request,cid=None):
+        token = request.headers.get('Authorization')
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
                 
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None and tokens is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if not cid:
+                return Response({'error':"Entred course id",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+            
+            course=Course_table.objects.filter(course_id=cid).all()
+            print(course)
+            
+            if not course:
+                return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            archive=[]
+            for cor in course:
+                if cor.active==True:
+                    serializer=ProgramSerializer(cor)
+                    archive.append(serializer.data)
+                else:
+                    continue
+                    
+            return Response({'message':'Course archived successfully','Archived Courses':archive,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    
+                    
+                    
+            
+                
+            
+          
+                
+ 
+        
+                
+            
+        except Exception as e:
+            return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+              
+             
+   
             
                 
                 

@@ -24,7 +24,7 @@
 #         x = send_mail(
 #             subject,
 #             message,
-#             'amitraazec53@gmail.com',  # Replace with your sender email address
+#             'email@progrowth.coach',  # Replace with your sender email address
 #             recipient_list=[user_email],  # Replace with the recipient email address
 #             fail_silently=False,
 #         )

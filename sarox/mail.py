@@ -57,7 +57,7 @@ class sendMail(APIView):
             email=EmailMessage(
                 'This mail recieved from vijay johar bussiness pvt Ltd.',
                 f'Please fill the form:- {google_form_link}',
-                'amitraazec53@gmail.com',  # Replace with your sender email address
+                'email@progrowth.coach',  # Replace with your sender email address
                 [user.email],  # Extract the email address from the user instance
                 # fail_silently=False,
             )
