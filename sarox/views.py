@@ -642,12 +642,23 @@ class ByCourseName(APIView):
                 count=len(bool_value)
                 if count==1:
                     if False in bool_value:
+                        for course in program:
+                            course.archive=False
+                            value=course.archive=False
+                            course.save()
                         
-                        value=False
+                        
                     else:
-                        value=True
+                        for course in program:
+                            course.archive=True
+                            value=course.archive=False
+                            course.save()
+                       
                 else:
-                    value=False
+                    for course in program:
+                        course.archive=False
+                        value=course.archive=False
+                        course.save()
 
                 
                 # heading=[prog.heading for prog in program]

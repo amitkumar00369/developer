@@ -468,7 +468,8 @@ class GetAssignCourseofCoach(APIView):
                         if course.course_id not in course_dict:  # Check if course ID is not in dictionary
                             course_dict[course.course_id] = {
                             'course_name': course.course_name,
-                            'date': course.date
+                            'date': course.date,
+                            'archives':course.archive
                             }
 
     # Extract values from the dictionary to get the final datas list
