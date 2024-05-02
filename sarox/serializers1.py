@@ -104,3 +104,9 @@ class allProgramSerializer(serializers.ModelSerializer):
     class Meta:
         model=allProgramTable
         fields=['id','title','video1','video2','video3','video4','video5','PPT1','PPT2','PPT3','PPT4','PPT5','date','time']
+        
+class FeedbackFormSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    email = serializers.EmailField()
+    mobile = serializers.CharField(max_length=15)
+    feedback = serializers.CharField()

@@ -6,7 +6,12 @@ from .views import GetAllCourse,UpdateInCT1,GetAllCourseByUser,ByCourseID,forget
 from .surveyViews import CreateSurvey,getAllSurvey,updateSurvey,deleteSurvey,getAllTypeSurvey
 from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,deleteThoughts,deleteVideo,updateVideo
 from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram,AssignCourseByemail,GetAssignCourseofCoach,activeCourse,archiveCourse
-from .archive import archiveCourses
+from .archive import archiveCourses,CoachDashboard
+
+# from .google_api import generate_form
+
+
+
 
 
 urlpatterns = [
@@ -99,11 +104,13 @@ urlpatterns = [
     path('activeCourse/<str:email>/<int:cid>/',activeCourse.as_view()),
     path('archiveCourses/<str:email>',archiveCourses.as_view()),
     path('archiveCourses/',archiveCourses.as_view()),
-    
+    path('CoachDashboard/<str:email>',CoachDashboard.as_view()),
+    path('CoachDashboard/',CoachDashboard.as_view()),
     
     
 ] 
 # + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 
 

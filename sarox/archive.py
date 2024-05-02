@@ -114,3 +114,103 @@ class archiveCourses(APIView):
   
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+class CoachDashboard(APIView):
+    def get(self, request,email=None):
+        token = request.headers.get('Authorization')
+        if email is None:
+            return Response({'error':'email required','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+    
+
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).first()
+            tokens=AdminTokenTable.objects.filter(user_id=userId).first()
+   
+            if token_instance is None and tokens is None:
+                return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user=CustomUser.objects.filter(email=email).first()
+            if not user:
+                return Response({'error':'User not found','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+            courses_id=json.loads(user.Course_id)
+           
+            # courses = Course_table.objects.all().order_by('-course_name')
+            
+            
+                
+            
+            data = {}
+            datas=[]
+           
+            courseId=[]
+            active_program=[]
+            completed_program=[]
+            for id in courses_id:
+                courses=Course_table.objects.filter(course_id=id).all()
+                bool_val=set(cor.active for cor in courses)
+               
+                bool_len=len(bool_val)
+                if bool_len<2:
+                    if True in bool_val:
+                        for course in courses:
+                            if course.course_id not in courseId:
+                                data= {
+                                'course_id': course.course_id,
+                                'course_name': course.course_name,
+                                'date': course.date
+                                  }
+                            
+                                completed_program.append(data)
+                               
+                                courseId.append(course.course_id)
+                            else:
+                                continue
+                elif bool_len==2:
+                    if False or True in bool_val:
+                        for course in courses:
+                            if course.course_id not in courseId:
+                                data= {
+                                'course_id': course.course_id,
+                                'course_name': course.course_name,
+                                'date': course.date
+                                  }
+                                active_program.append(data)
+                                
+                                courseId.append(course.course_id)
+                            else:
+                                continue
+                        
+                        
+                TotalProgram=len(courses_id)    
+                
+             
+                            
+ 
+ 
+            return Response({'message':'All archive courses retrieves','data':{'TotalProgram':TotalProgram,'ActiveProgram':active_program,'CompletedProgram':completed_program},'status':status.HTTP_200_OK},status.HTTP_200_OK)
+
+  
+        except Exception as e:
+            return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)

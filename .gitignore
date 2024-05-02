@@ -1,6 +1,7 @@
 /sarox/dummy_code.py
 /sarox/views3.py
 /sarox/referal.py
+/sarox/google_api.py
 /App/__pycache__
 /sarox/__pycache__
 /sarox/migrations/__pycache__
@@ -9,3 +10,6 @@
 /unnammmed.png
 /Techahead_resume.pdf
 /VID-20211110-WA0006.mp4
+/proenv
+/django-422109-0aebaee03d05.json
+/client_secret_267084732476-im1h2s37chubijno01ejksscg487ibhl.apps.googleusercontent.com.json
