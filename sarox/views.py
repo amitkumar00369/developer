@@ -521,6 +521,11 @@ class WeekProgram(APIView):
             course_name=request.data.get('course_name')
             subheading=request.data.get('text')
             heading=request.data.get('heading')
+            subheading1=request.data.get('text1')
+            heading1=request.data.get('heading1')
+            subheading2=request.data.get('text2')
+            heading2=request.data.get('heading2')
+            weeks=request.data.get('weeks')
             
             programs = Course_table.objects.all()
             course_names_set = {pro.course_name for pro in programs}
@@ -528,14 +533,22 @@ class WeekProgram(APIView):
             serializer=ProgramSerializer(data=request.data,partial=True)
             if serializer.is_valid():
                 prog = serializer.save()
+                
                  # Assuming course_name is defined elsewhere
 
   
                 prog.course_name = course_name
                 headings_dict = {"heading": [heading], "subheading": subheading}
+                headings_dict1 = {"heading": [heading1], "subheading": subheading1}
+                headings_dict2 = {"heading": [heading2], "subheading": subheading2}
                 json_string = json.dumps(headings_dict)
+                json_string1 = json.dumps(headings_dict1)
+                json_string2 = json.dumps(headings_dict2)
                 prog.headings = json_string
+                prog.headings1 = json_string1
+                prog.headings2 = json_string2
                 prog.course_id=prog.course_id
+                prog.weeks=weeks
                 prog.save()
 
 
@@ -572,11 +585,12 @@ class WeekProgram(APIView):
  
                 return Response({
         'message': 'Program submitted successfully',
-        'data': serializer.data,
         'course_name': course_name,
         'course_id': prog.course_id,
+        'data':{'week':prog.weeks,'details':serializer.data},
         'status': status.HTTP_200_OK
-    }, status=status.HTTP_200_OK)
+        
+        }, status=status.HTTP_200_OK)
 
             
             
@@ -636,6 +650,27 @@ class ByCourseName(APIView):
                 
             else:
                 program = Course_table.objects.filter(course_id=cid).all()
+                course_details=[]
+                for prog in program:
+                    if prog is None:
+                        continue
+                        
+                    
+                    course_details.append({'week_name':prog.weeks,
+                        'details':{"id": prog.id,  
+                         "PPT": prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
+                         "headings": prog.headings,
+                         "headings1":  prog.headings1,
+                         "headings2": prog.headings2,
+                         "video": prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
+                        "date": prog.date
+                    },     
+                                                           
+                    })
+                    # course_details.append()
+                    
+                    
+                    
                 course_name=set(cor.course_name for cor in program)
                 course_id=set(cor.course_id for cor in program)
                 bool_value=set(cor.active for cor in program)
@@ -670,7 +705,7 @@ class ByCourseName(APIView):
             serializer = ProgramSerializer(program, many=True) 
         
             # Pass data to serializer
-            return Response({'message': 'Get all programs', 'data': {'details':serializer.data,'course_name':course_name,'course_id':course_id,'archive':value}}, status=status.HTTP_200_OK)
+            return Response({'message': 'Get all programs', 'course_name':course_name,'course_id':course_id,'details':course_details,'archive':value}, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

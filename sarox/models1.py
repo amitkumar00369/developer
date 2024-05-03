@@ -97,6 +97,8 @@ class Course_table(models.Model):
     course_name=models.CharField(max_length=255,default='',blank=True,null=True)
     course_id=models.IntegerField(default=0)
     headings=models.CharField(max_length=255,blank=True)
+    headings1=models.CharField(max_length=255,blank=True)
+    headings2=models.CharField(max_length=255,blank=True)
     active=models.BooleanField(default=False)
     archive=models.BooleanField(default=False)
     
