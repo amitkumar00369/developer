@@ -650,23 +650,61 @@ class ByCourseName(APIView):
                 
             else:
                 program = Course_table.objects.filter(course_id=cid).all()
-                course_details=[]
+                program = Course_table.objects.filter(course_id=cid).all()
+                course_details = []
+
+# Dictionary to store details by week name
+                week_details = {}
+
                 for prog in program:
                     if prog is None:
                         continue
+    
+    # Check if week_name already exists in week_details
+                    if prog.weeks in week_details:
+                            week_details[prog.weeks].append({
+                                    'id': prog.id,
+                                    'PPT': prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
+                                    'headings': prog.headings,
+                                    'video': prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
+                                    'date': prog.date
+                                    })
+                    else:
+                        week_details[prog.weeks] = [{
+                        'id': prog.id,
+                        'PPT': prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
+                        'headings': prog.headings,
+                        'video': prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
+                        'date': prog.date
+                        }]
+
+# Convert week_details into the required format
+            for week, details_list in week_details.items():
+                week_details_dict = {'week_name': week}
+                for index, details in enumerate(details_list, start=1):
+                    week_details_dict['details{}'.format(index)] = details
+                course_details.append(week_details_dict)
+
+# Now course_details contains the restructured data
+
+                # course_details=[]
+                
+                # for prog in program:
+                #     if prog is None:
+                #         continue
                         
                     
-                    course_details.append({'week_name':prog.weeks,
-                        'details':{"id": prog.id,  
-                         "PPT": prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
-                         "headings": prog.headings,
-                         "headings1":  prog.headings1,
-                         "headings2": prog.headings2,
-                         "video": prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
-                        "date": prog.date
-                    },     
+                #     course_details.append({'week_name':prog.weeks,
+                #         'details':{"id": prog.id,  
+                #          "PPT": prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
+                #          "headings": prog.headings,
+                #         #  "headings1":  prog.headings1,
+                #         #  "headings2": prog.headings2,
+                #          "video": prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
+                #         "date": prog.date
+                #     },     
                                                            
-                    })
+                #     })
                     # course_details.append()
                     
                     
