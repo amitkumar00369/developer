@@ -26,9 +26,57 @@ class UserSignIN(APIView):
             if serializer.is_valid():
                 user=serializer.save()
                 google_form_link = "https://docs.google.com/forms/d/e/1FAIpQLSf3tbsAaZZfTNU_4mGGOL9l-Hd0U7rXeUPW1PwI1kPfB65vFw/viewform"
+                password_change_link = "https://docs.google.com/forms/d/e/1FAIpQLSf3tbsAaZZfTNU_4mGGOL9l-Hd0U7rXeUPW1PwI1kPfB65vFw/viewform"
+                portal_login_link = "https://docs.google.com/forms/d/e/1FAIpQLSf3tbsAaZZfTNU_4mGGOL9l-Hd0U7rXeUPW1PwI1kPfB65vFw/viewform"
                 email=EmailMessage(
-                'This mail recieved from vijay johar bussiness pvt Ltd.',
-                f'Please fill the form:- {google_form_link}',
+                'Welcome Aboard as a Coach!',
+                # f'Please fill the form:- {google_form_link}',
+                f"""
+                Dear {user.name},
+
+                We're thrilled to welcome you aboard 
+                as a coach here at Pro Growth! Your 
+                expertise and passionwill undoubtedly 
+                enrich the learning journey of our
+                clients.
+                 
+                As a coach, you play a pivotal role in 
+                guiding and an inspiring our clients, and
+                we're confident that your unique insights
+                and experiences will make a significant
+                impact.
+                
+                Here are a few things to get you started:
+                To Log in to your coach dashboard,
+                Clink the link below to change password.
+                 
+                {password_change_link}
+                Here is the link to the portal,enter your
+                email and password to log In.
+                 
+                {portal_login_link}
+                From here, you can manage your Programs,put
+                updates, and access resources to enhance your
+                coaching experience.
+                
+                Familiarize yourself with our coaching guidelines
+                and resources available in the coach portal. We're
+                continuously updating our materials to ensure you
+                have everything you need to succeed.
+
+                We're thrilled to have you join our team and look
+                forward to the positive impact you'll make.
+
+                If you have any questions or need assistance, please
+                don't hesitate to reach out.
+
+                Welcome aboard, [Coach's Name]!
+
+                Best regards,
+                Team,
+                PRO GROWTH
+                """,
+         
                 'email@progrowth.coach',  # Replace with your sender email address
                 [user.email],  # Extract the email address from the user instance
                 # fail_silently=False,

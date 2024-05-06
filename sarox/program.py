@@ -395,11 +395,52 @@ class AssignCourseByemail(APIView):
      
            
                 user.Course_name=set(courses_name_list)
+                email=EmailMessage(
+                'Congratulations, You have been assigned a new program!',
+                # f'Please fill the form:- {google_form_link}',
+                f"""
+                Dear {user.name},
+
+                We're thrilled to assign you a new program!
+                Get ready to embark on an enriching learning
+                journey as well as to guide and inspire 
+                participants and the clients. 
+                Here are a few details to help you get started:
+
+                Course Overview: Familiarize yourself with the
+                Program syllabus, objectives, and schedule. 
+                You'll find all the essential information 
+                you need to succeed in the Program.
+                You can access documents, videos, and additional
+                resources to support your learning.
+                
+                We're thrilled to have you as part of our learning 
+                community and can't wait to see the progress you'll
+                make throughout the Program.
+                
+                If you have any questions or need assistance, please
+                don't hesitate to reach out to the team. Please check
+                the portal for more details. 
+
+                Best wishes for a successful
+                learning experience!
+
+                Warm regards,
+                Team 
+                PRO GROWTH
+
+                """,
+                'email@progrowth.coach',  # Replace with your sender email address
+                [user.email],  # Extract the email address from the user instance
+                # fail_silently=False,
+                )
+                email.send()
   
                 user.save()
+                
                
 
-                return Response({'message': 'Courses assign for coach', 'data': course_list, 'status': status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message': 'Courses assign for coach', 'message':'Email send successfully','data': course_list, 'status': status.HTTP_200_OK},status.HTTP_200_OK)
       
         except user.DoesNotExist:
             return Response({'error':'User not found','status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
