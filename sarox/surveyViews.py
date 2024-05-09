@@ -50,8 +50,9 @@ class CreateSurvey(APIView):
             
             if serializer.is_valid():
                 survey=serializer.save()
+                count=len(SurveyTable.objects.all())
                 
-                return Response({'message':'Survey created successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Survey created successfully','data':serializer.data,'submission_count':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'message':serializer.errors,'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
@@ -92,11 +93,12 @@ class getAllSurvey(APIView):
             
             if id is None:
                 survey=SurveyTable.objects.all().order_by('-id')
+                count=len(SurveyTable.objects.all())
                 
                 serializer=SurveySerializer(survey,many=True)
                 
                 if serializer:
-                    return Response({'message':'All survey data retrieves successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    return Response({'message':'All survey data retrieves successfully','data':serializer.data,'submission_count':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
                 else:
                     return Response(serializer.errors,status=404)
@@ -137,13 +139,14 @@ class getAllTypeSurvey(APIView):
             
          
             survey=SurveyTable.objects.filter(survey_type=Surv_type).all()
+            count=len(SurveyTable.objects.filter(survey_type=Surv_type).all())
             if not survey:
                 return Response({'error':"Survey type not found in survey table",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
                 
             serializer=SurveySerializer(survey,many=True)
                 
             if serializer:
-                return Response({'message':'All survey type retrieves successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'All survey type retrieves successfully','data':serializer.data,'submission_count':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
             else:
                 return Response(serializer.errors,status=404)

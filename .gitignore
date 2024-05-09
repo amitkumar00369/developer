@@ -6,7 +6,8 @@
 # /sarox/apps.py
 /App/__pycache__
 /sarox/__pycache__
-/sarox/migrations/__pycache__
+/sarox/migrations/__pycache__'
+/sarox/migrations
 /env
 /db.sqlite3
 /unnammmed.png
@@ -14,4 +15,4 @@
 /VID-20211110-WA0006.mp4
 /proenv
 /django-422109-0aebaee03d05.json
-/client_secret_267084732476-im1h2s37chubijno01ejksscg487ibhl.apps.googleusercontent.com.json
+/django-422609-a2d65a3463fc.json

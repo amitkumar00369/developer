@@ -8,9 +8,10 @@ from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,de
 from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram,AssignCourseByemail,GetAssignCourseofCoach,activeCourse,archiveCourse
 from .archive import archiveCourses,CoachDashboard
 
-# from .google_api import GenerateForm
+from .google_api import GenerateForm
 # from .api import CreateGoogleForm
 from .views import ResetPassword
+from .views2 import SimpleQuestionAnswer,GetAllQuestion,deleteQuestions
 
 
 
@@ -110,8 +111,14 @@ urlpatterns = [
     path('CoachDashboard/<str:email>',CoachDashboard.as_view()),
     path('CoachDashboard/',CoachDashboard.as_view()),
     
-    # path('googleform',GenerateForm.as_view()),
-    # path('CreateGoogleForm',CreateGoogleForm.as_view()),
+    path('googleform',GenerateForm.as_view()),
+
+    path('SimpleQuestionAnswer',SimpleQuestionAnswer),
+    path('GetAllQuestion/<str:email>',GetAllQuestion.as_view()),
+     path('GetAllQuestion',GetAllQuestion.as_view()),
+    
+    
+    path('deleteQuestions',deleteQuestions.as_view())
     
     
     
