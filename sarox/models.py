@@ -14,6 +14,7 @@ class QuestionAnswer(models.Model):
     mobile_no = models.CharField(max_length=15,default='')
    
     email = models.EmailField(default='')
+    suggestion=models.CharField(max_length=255,default='')
     question = models.CharField(max_length=200)
     hindi_question = models.CharField(max_length=200,default='')
     answer = models.CharField(max_length=200) 

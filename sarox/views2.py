@@ -18,6 +18,7 @@ def SubmitQuestions(request):
             name = data.get('name')
             email = data.get('email')
             mobile_no = data.get('mobile_no')
+            suggestion = data.get('suggestion')
 
             # Check if required fields are provided
             if not (name and email and mobile_no):
@@ -37,7 +38,8 @@ def SubmitQuestions(request):
                 qa = QuestionAnswer(question=question_text, hindi_question=hindi_question_text, answer=correct_answer,
                     name=name,
                     email=email,
-                    mobile_no=mobile_no)
+                    mobile_no=mobile_no,suggestion=suggestion)
+                    
             
                 qa.save()
 
