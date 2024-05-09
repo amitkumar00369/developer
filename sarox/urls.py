@@ -11,7 +11,7 @@ from .archive import archiveCourses,CoachDashboard
 # from .google_api import GenerateForm
 # from .api import CreateGoogleForm
 from .views import ResetPassword
-from .views2 import SimpleQuestionAnswer,GetAllQuestion,deleteQuestions
+from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions
 
 
 
@@ -113,7 +113,7 @@ urlpatterns = [
     
     # path('googleform',GenerateForm.as_view()),
 
-    path('SimpleQuestionAnswer',SimpleQuestionAnswer),
+    path('SubmitQuestions',SubmitQuestions),
     path('GetAllQuestion/<str:email>',GetAllQuestion.as_view()),
      path('GetAllQuestion',GetAllQuestion.as_view()),
     

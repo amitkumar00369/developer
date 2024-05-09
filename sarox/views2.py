@@ -9,7 +9,7 @@ from .models import QuestionAnswer
 
 logger = logging.getLogger(__name__)
 
-def SimpleQuestionAnswer(request):
+def SubmitQuestions(request):
     if request.method == 'POST':
         try:
             # Parse JSON data from the request body
