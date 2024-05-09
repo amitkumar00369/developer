@@ -33,7 +33,7 @@ class UserSignIN(APIView):
                 # f'Please fill the form:- {google_form_link}',
                 f"""
                 Dear {user.name},
-                Your login email:{user.email} and 
+                Your login Email:{user.email} and 
                 password:{user.password},
                 
                 We're thrilled to welcome you aboard 
@@ -391,31 +391,58 @@ class DeleteCoach(APIView):
         
 class ResetPassword(APIView):
     def post(self, request):
-        data=request.data
+        token = request.headers.get('Authorization')
 
-        email=data.get('email')
-        new_password=data.get('new_password')
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).first()
+            # tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            
+            data=request.data
+
+            email=data.get('email')
+            new_password=data.get('new_password')
         # confirm_password=data.get('confirm_password')
-        if not email:
-            return Response({'error': 'Email is required','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
-        if not  new_password:
-            return Response({'error': 'Entered New Password','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+            if not email:
+                return Response({'error': 'Email is required','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+            if not  new_password:
+                return Response({'error': 'Entered New Password','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
 
-        user=CustomUser.objects.filter(email=email).first()
+            user=CustomUser.objects.filter(email=email).first()
+            if not user:
+                return Response({'error': 'Coach not found','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
         # email_in_otp_table=OTPVerification_TABLE.objects.filter(email=email).first()
-        if not user:
-            return Response({'error': 'Email not found','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+            if  user.email!=token_instance.email:
+                return Response({'error': 'Email not matched with token','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
         # print(email_in_otp_table.email)
         # print(email)
-        try:
+       
             # if email_in_otp_table.email==email:
-            if user:
-                
+        
 
-                user.password=new_password
-                user.save()
+            user.password=new_password
+            user.save()
                     # email_in_otp_table.delete()
-                return Response({'message': 'Coach changed password successfully','status':status.HTTP_200_OK})
+            return Response({'message': 'Coach changed password successfully','status':status.HTTP_200_OK})
 
        
 
