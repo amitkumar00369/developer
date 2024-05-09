@@ -33,7 +33,9 @@ class UserSignIN(APIView):
                 # f'Please fill the form:- {google_form_link}',
                 f"""
                 Dear {user.name},
-
+                Your login email:{user.email} and 
+                password:{user.password},
+                
                 We're thrilled to welcome you aboard 
                 as a coach here at Pro Growth! Your 
                 expertise and passionwill undoubtedly 
@@ -49,12 +51,10 @@ class UserSignIN(APIView):
                 Here are a few things to get you started:
                 To Log in to your coach dashboard,
                 Clink the link below to change password.
-                 
-                {password_change_link}
+                {password_change_link},
                 Here is the link to the portal,enter your
                 email and password to log In.
-                 
-                {portal_login_link}
+                {portal_login_link},
                 From here, you can manage your Programs,put
                 updates, and access resources to enhance your
                 coaching experience.
@@ -86,7 +86,7 @@ class UserSignIN(APIView):
                 
                 email.send()
                 
-                return Response({'message':'User has been created successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Coach created successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'error':serializer.errors},status.HTTP_400_BAD_REQUEST)
@@ -107,16 +107,16 @@ class UserLogIn(APIView):
             user=CustomUser.objects.filter(email=email).first()
             
             if not user:
-                return Response({'error':'User not found','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                return Response({'error':'Coach not found','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
-            if not check_password(password,user.password):
+            if password!=user.password:
                 return Response({"error": "Password entered is wrong, please check and try again",'status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
             
             if user:
                
             
             
-                if check_password(password,user.password):
+                if password==user.password:
                     payload = {
                     'id': user.id,
                     'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=9),
@@ -138,7 +138,7 @@ class UserLogIn(APIView):
                         token_store=token,
                         email=user.email
                         )
-                    return Response({'message':"User Login Successfully",'name':user.name,'email':user.email,'image':user.profile_image,'token':token,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    return Response({'message':"Coach Login Successfully",'name':user.name,'email':user.email,'image':user.profile_image,'token':token,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -210,7 +210,7 @@ class UserDetails(APIView):
                 serializer=UserSerializer(user,many=True)
                 
                 
-                return Response({'message':'All user details found successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'All Coach details found successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
                 
             if id:
@@ -218,7 +218,7 @@ class UserDetails(APIView):
                 serializer=UserSerializer(user)
                 
             
-                return Response({'message':'User details found successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Coach details found successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
         except Exception as e:
             return Response({'error':'ERROR','data':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -263,12 +263,12 @@ class User_profile_update(APIView):
            
            
             if user is None:
-               return Response({'error': 'User not found', 'status': status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+               return Response({'error': 'Coach not found', 'status': status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
 
             serializer = UserSerializer(user, data=request.data, partial=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({'message': 'User Profile updated successfully', 'data': serializer.data, 'status': status.HTTP_200_OK})
+                return Response({'message': 'Coach Profile updated successfully', 'data': serializer.data, 'status': status.HTTP_200_OK})
       
            
             else:
@@ -318,18 +318,19 @@ class forgetPassword(APIView):
         
             if not user:
                 return Response({'error': 'Email not found','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+            if new_password!=confirm_password:
+                return Response({'error':'Your password not matched with new password','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
       
           
         
             if new_password==confirm_password:
 
-                user.set_password(new_password)
+                user.password=new_password
                 user.save()
                      
                 return Response({'message': 'Password changed successfully','status':status.HTTP_200_OK})
 
-            if new_password!=confirm_password:
-                    return Response({'error':'Your password not matched with new password','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+
 
    
 
@@ -385,6 +386,46 @@ class DeleteCoach(APIView):
             
         except Exception as e:
             return Response({'error':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        
+class ResetPassword(APIView):
+    def post(self, request):
+        data=request.data
+
+        email=data.get('email')
+        new_password=data.get('new_password')
+        # confirm_password=data.get('confirm_password')
+        if not email:
+            return Response({'error': 'Email is required','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+        if not  new_password:
+            return Response({'error': 'Entered New Password','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+
+        user=CustomUser.objects.filter(email=email).first()
+        # email_in_otp_table=OTPVerification_TABLE.objects.filter(email=email).first()
+        if not user:
+            return Response({'error': 'Email not found','status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
+        # print(email_in_otp_table.email)
+        # print(email)
+        try:
+            # if email_in_otp_table.email==email:
+            if user:
+                
+
+                user.password=new_password
+                user.save()
+                    # email_in_otp_table.delete()
+                return Response({'message': 'Coach changed password successfully','status':status.HTTP_200_OK})
+
+       
+
+      
+
+
+        except Exception as e:
+            print(e)
+            return Response({'message': 'Internal server error','status':status.HTTP_500_INTERNAL_SERVER_ERROR}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
                 
             
             
@@ -422,7 +463,7 @@ class AdminSignIN(APIView):
             
             if serializer.is_valid():
                 serializer.save()
-                return Response({'message': 'User has been created successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+                return Response({'message': 'Admin has been created successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
             
             else:
                 return Response({'error': serializer.errors}, status.HTTP_400_BAD_REQUEST)
@@ -444,7 +485,7 @@ class AdminLogIn(APIView):
             user=AdminTables.objects.filter(email=email).first()
             
             if not user:
-                return Response({'error':'User not found','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                return Response({'error':'Admin not found','status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             if not check_password(password,user.password):
                 return Response({"error": "Password entered is wrong, please check and try again",'status':status.HTTP_400_BAD_REQUEST}, status=status.HTTP_400_BAD_REQUEST)
@@ -652,7 +693,7 @@ class WeekProgram(APIView):
         except AdminTokenTable.DoesNotExist:
             raise AuthenticationFailed('Invalid token')
 
-        return Response({'message': 'Logout successful','status':status.HTTP_200_OK}, status=status.HTTP_200_OK)
+        
     
     
     

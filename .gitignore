@@ -1,7 +1,9 @@
 /sarox/dummy_code.py
 /sarox/views3.py
 /sarox/referal.py
+/sarox/api.py
 /sarox/google_api.py
+# /sarox/apps.py
 /App/__pycache__
 /sarox/__pycache__
 /sarox/migrations/__pycache__

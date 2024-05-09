@@ -8,7 +8,9 @@ from .mail import sendMail,videoUpload,postThought,getAllVideo,getAllThoughts,de
 from .program import CreateallProgram,getAllProgram,deleteProgram,updateProgram,AssignCourseByemail,GetAssignCourseofCoach,activeCourse,archiveCourse
 from .archive import archiveCourses,CoachDashboard
 
-# from .google_api import generate_form
+from .google_api import GenerateForm
+from .api import CreateGoogleForm
+from .views import ResetPassword
 
 
 
@@ -22,6 +24,7 @@ urlpatterns = [
     path('user/update/profile/<int:id>',User_profile_update.as_view()),
     path('user/update/profile/',User_profile_update.as_view()),
     path('forgetPassword',forgetPassword.as_view()),
+    path('setNewPassword',ResetPassword.as_view()),
     
     
     
@@ -106,6 +109,10 @@ urlpatterns = [
     path('archiveCourses/',archiveCourses.as_view()),
     path('CoachDashboard/<str:email>',CoachDashboard.as_view()),
     path('CoachDashboard/',CoachDashboard.as_view()),
+    
+    path('googleform',GenerateForm.as_view()),
+    path('CreateGoogleForm',CreateGoogleForm.as_view()),
+    
     
     
 ] 

@@ -7,8 +7,9 @@ class CustomUserManager(BaseUserManager):
         Create and return a regular user with an email and password.
         """
         email = self.normalize_email(email)
-        user = self.model(email=email, **extra_fields)
-        user.set_password(password)
+        user = self.model(email=email,password=password, **extra_fields)
+        # user.set_password(password)
+    
         user.save(using=self._db)
         return user
 
