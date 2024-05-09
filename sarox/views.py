@@ -415,7 +415,7 @@ class ResetPassword(APIView):
             token_instance = UserTokenTable.objects.filter(user_id=userId).first()
             # tokens=AdminTokenTable.objects.filter(user_id=userId).all()
             if token_instance is None:
-                return Response({'error':"Token not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                return Response({'error':"Coach token not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
             data=request.data
 
