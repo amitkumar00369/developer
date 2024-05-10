@@ -11,7 +11,7 @@ from .archive import archiveCourses,CoachDashboard
 # from .google_api import GenerateForm
 # from .api import CreateGoogleForm
 from .views import ResetPassword
-from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions
+from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions,GetAllPreQuestion,deletePreQuestions,PreSubmitQuestions,PostSubmitQuestions,GetAllPostQuestion,deletePostQuestions
 
 
 
@@ -113,12 +113,18 @@ urlpatterns = [
     
     # path('googleform',GenerateForm.as_view()),
 
-    path('SubmitQuestions',SubmitQuestions),
-    path('GetAllQuestion/<str:email>',GetAllQuestion.as_view()),
-     path('GetAllQuestion',GetAllQuestion.as_view()),
-    
-    
-    path('deleteQuestions',deleteQuestions.as_view())
+    path('midSurveyQuestions',SubmitQuestions),
+    path('GetAllMidSurveyQuestion/<str:email>',GetAllQuestion.as_view()),
+    path('GetAllMidSurveyQuestion',GetAllQuestion.as_view()),
+    path('deleteMidSurveyQuestions',deleteQuestions.as_view()),
+    path('preSurveyQuestions',PreSubmitQuestions),
+    # path('GetAllQuestion/<str:email>',GetAllQuestion.as_view()),
+    path('GetAllPreSurveyQuestion',GetAllPreQuestion.as_view()),
+    path('deletePreSurveyQuestions',deletePreQuestions.as_view()),
+    path('postSurveyQuestions',PostSubmitQuestions),
+    path('GetAllPostSurveyQuestion/<str:email>',GetAllPostQuestion.as_view()),
+    path('GetAllPostSurveyQuestion',GetAllPostQuestion.as_view()),
+    path('deletePostSurveyQuestions',deletePostQuestions.as_view()),
     
     
     
