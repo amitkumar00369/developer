@@ -36,7 +36,7 @@ class PostQuestionAnswer(models.Model):
     email = models.EmailField(default='')
     suggestion=models.CharField(max_length=255,default='')
 
-    suggestion=models.CharField(max_length=255,default='')
+    suggestion2=models.CharField(max_length=255,default='')
     question = models.CharField(max_length=200)
     hindi_question = models.CharField(max_length=200,default='')
     answer = models.CharField(max_length=200) 

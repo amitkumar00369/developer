@@ -195,6 +195,7 @@ def PostSubmitQuestions(request):
             email = data.get('email')
             mobile_no = data.get('mobile_no')
             suggestion = data.get('suggestion')
+            suggestion2= data.get('suggestion2')
 
             # Check if required fields are provided
             if not (name and email and mobile_no):
@@ -214,7 +215,7 @@ def PostSubmitQuestions(request):
                 qa = PostQuestionAnswer(question=question_text, hindi_question=hindi_question_text, answer=correct_answer,
                     name=name,
                     email=email,
-                    mobile_no=mobile_no,suggestion=suggestion)
+                    mobile_no=mobile_no,suggestion=suggestion,suggestion2=suggestion2)
                     
             
                 qa.save()
@@ -240,6 +241,7 @@ class GetAllPostQuestion(APIView):
         email=list(set(ques.email for ques in questions))
         mobile_no=list(set(ques.mobile_no for ques in questions))
         suggestion=list(set(ques.suggestion for ques in questions))
+        suggestion2=list(set(ques.suggestion2 for ques in questions))
             
         questions_data = []
         for index, question in enumerate(questions, start=1):
@@ -260,7 +262,7 @@ class GetAllPostQuestion(APIView):
             #     }
             #     questions_data.append(data)
           
-        return JsonResponse({'data':questions_data,'name':name,'email':email,'mobileNo':mobile_no,'suggestion':suggestion})
+        return JsonResponse({'data':questions_data,'name':name,'email':email,'mobileNo':mobile_no,'suggestion':suggestion,'suggestion2':suggestion2})
     
         
         
