@@ -12,6 +12,7 @@ from .archive import archiveCourses,CoachDashboard
 # from .api import CreateGoogleForm
 from .views import ResetPassword
 from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions,GetAllPreQuestion,deletePreQuestions,PreSubmitQuestions,PostSubmitQuestions,GetAllPostQuestion,deletePostQuestions
+from .generate_pdf import Mid_generate_pdf,Post_generate_pdf,Pre_generate_pdf
 
 
 
@@ -125,6 +126,9 @@ urlpatterns = [
     path('GetAllPostSurveyQuestion/<str:email>',GetAllPostQuestion.as_view()),
     path('GetAllPostSurveyQuestion',GetAllPostQuestion.as_view()),
     path('deletePostSurveyQuestions',deletePostQuestions.as_view()),
+    path('MidSurveyPdf',Mid_generate_pdf),
+    path('PostSurveyPdf',Post_generate_pdf),
+    path('PreSurveyPdf',Pre_generate_pdf)
     
     
     
