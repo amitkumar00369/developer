@@ -1,3 +1,5 @@
+from django.conf import settings
+import os
 from django.http import HttpResponse
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -9,6 +11,10 @@ def Mid_generate_pdf(request):
     # Set up the response to return a PDF
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="MidSurveydata.pdf"'
+    #also return pdf file in postman
+    # pdf_path = os.path.join('sarox\pdf', 'MidSurveydata.pdf')
+ 
+    
 
     # Create the PDF object
     doc = SimpleDocTemplate(response, pagesize=A4)
@@ -64,7 +70,16 @@ def Mid_generate_pdf(request):
 
     # Build the PDF
     doc.build([table])
-    data.delete()
+    
+    # Read the generated PDF file and write it to the response
+    # with open(pdf_path, 'rb') as pdf_file:
+    #     response.write(pdf_file.read())
+
+    # Optional: delete data after creating the PDF
+    # data.delete()
+
+    return response
+    # data.delete()
 
     return response
 
@@ -139,7 +154,7 @@ def Post_generate_pdf(request):
 
     # Build the PDF
     doc.build([table])
-    data.delete()
+    # data.delete()
 
     return response
 
@@ -206,7 +221,7 @@ def Pre_generate_pdf(request):
 
     # Build the PDF
     doc.build([table])
-    data.delete()
+    # data.delete()
 
     return response
 

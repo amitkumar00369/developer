@@ -47,4 +47,5 @@ utcnow==0.3.8
 virtualenv==20.25.0
 virtualenvwrapper-win==1.2.7
 mysqlclient==2.2.4
+reportlab==4.2.0
 # python==3.10.12
