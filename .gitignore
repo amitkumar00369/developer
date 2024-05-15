@@ -16,3 +16,4 @@
 /proenv
 /django-422109-0aebaee03d05.json
 /django-422609-a2d65a3463fc.json
+/storages.backends.s3boto3.S3Boto3Storage

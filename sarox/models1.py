@@ -144,6 +144,8 @@ class SurveyTable(models.Model):
     Max_no_of_participants=models.BigIntegerField(blank=True)
     language=models.CharField(max_length=128)
     survey_questions=models.CharField(max_length=255,blank=True)
+    pdf_link=models.CharField(max_length=255,blank=True)
+    submission_count=models.IntegerField(blank=True,null=True)
     
     def save(self, *args, **kwargs):
        

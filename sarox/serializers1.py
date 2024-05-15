@@ -85,7 +85,7 @@ class CT1Serializer(serializers.ModelSerializer):
 class SurveySerializer(serializers.ModelSerializer):
     class Meta:
         model=SurveyTable
-        fields=['id','organisation_name','survey_type','start_survey_date','survey_name','Max_no_of_participants','language','survey_questions']
+        fields=['id','organisation_name','survey_type','start_survey_date','survey_name','Max_no_of_participants','language','survey_questions','pdf_link','submission_count']
         
         
 class VideoSerializer(serializers.ModelSerializer):
