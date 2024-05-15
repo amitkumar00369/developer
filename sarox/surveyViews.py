@@ -527,17 +527,21 @@ class deleteSurvey(APIView):
             if token_instance is None and tokens is None:
                 return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             if id is None:
-                return Response({'error':"Id  is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
-            survey=SurveyTable.objects.filter(id=id).first()
-            if not survey:
-                return Response({'error':"Survey not found",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                survey=SurveyTable.objects.all()
             
-            serializer=SurveySerializer(survey)
+            elif id:
+                survey=SurveyTable.objects.filter(id=id).first()
+            if not survey:
+                return Response({'message':"Survey table is empty",'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                
+
+            
+            serializer=SurveySerializer(survey,many=True)
             survey.delete()
           
             if serializer:
                
-                return Response({'message':'Survey deleted successfully','data':serializer.data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Survey deleted successfully','status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'error':serializer.errors},status=400)

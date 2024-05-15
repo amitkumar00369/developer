@@ -64,6 +64,7 @@ urlpatterns = [
     path('getAllSurvey/<str:Surv_type>',getAllTypeSurvey.as_view()),
     path('updateSurveyById/<int:id>',updateSurvey.as_view()),
     path('deleteSurveyById/<int:id>',deleteSurvey.as_view()),
+    path('deleteSurveyById/',deleteSurvey.as_view()),
     
     
     #course
