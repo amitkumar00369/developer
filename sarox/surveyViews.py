@@ -15,6 +15,7 @@ from .models1 import SurveyTable
 from .serializers1 import SurveySerializer
 from django.conf import settings
 import os
+import io
 from django.http import HttpResponse
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter
@@ -67,11 +68,12 @@ class CreateSurvey(APIView):
 #---------------------------------------------PRE----------------------------------------------------------
                 if survey.survey_type=="PRE":
 
-                    pdf_filename = f"PreSurveydata_{survey.id}.pdf"
-                    pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    # pdf_filename = f"PreSurveydata_{survey.id}.pdf"
+                    # pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    pdf_buffer = io.BytesIO()
 
 
-                    doc = SimpleDocTemplate(pdf_filepath, pagesize=A4)
+                    doc = SimpleDocTemplate(pdf_buffer, pagesize=A4)
 
  
                     data = PreQuestionAnswer.objects.all().order_by('suggestion')
@@ -118,19 +120,33 @@ class CreateSurvey(APIView):
 
     
                     doc.build([table])
+                    pdf_buffer.seek(0)
                     s3 = boto3.client('s3',
                       aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                       aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                       region_name=settings.AWS_S3_REGION_NAME)
+                    folder_path = f"PreSurvey/"  # Define the folder path
+                    file_key = f"{folder_path}PreSurveydata_{survey.id}.pdf" 
+                    s3.upload_fileobj(pdf_buffer, settings.AWS_STORAGE_BUCKET_NAME,file_key, ExtraArgs={'ContentType': 'application/pdf'})
 
-                    with open(pdf_filepath, 'rb') as pdf_file:
-                        s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
+    # Construct the PDF URL
+                    pdf_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_key}"
 
-   
-                    pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
-
-   
+    # Save the PDF link in the survey object
                     survey.pdf_link = pdf_url
+                    # s3 = boto3.client('s3',
+                    #   aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    #   aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    #   region_name=settings.AWS_S3_REGION_NAME)
+
+                    # with open(pdf_filepath, 'rb') as pdf_file:
+                    #     s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
+
+   
+                    # pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
+
+   
+                    # survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.suggestion for post in data)))
                     survey.save()
 
@@ -140,10 +156,11 @@ class CreateSurvey(APIView):
     #-------------------------------------------------------------------------------------------------------------------POST--------------------------
                 
                 if survey.survey_type=="POST":
-                    pdf_filename = f"PostSurveydata_{survey.id}.pdf"
-                    pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    # pdf_filename = f"PostSurveydata_{survey.id}.pdf"
+                    # pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    pdf_buffer = io.BytesIO()
                     
-                    doc = SimpleDocTemplate(pdf_filepath, pagesize=A0)
+                    doc = SimpleDocTemplate(pdf_buffer, pagesize=A0)
 
  
                     data = PostQuestionAnswer.objects.all().order_by('email')
@@ -201,15 +218,29 @@ class CreateSurvey(APIView):
 
 
                     doc.build([table])
+                    pdf_buffer.seek(0)
                     s3 = boto3.client('s3',
                       aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                       aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                       region_name=settings.AWS_S3_REGION_NAME)
+                    folder_path = f"PostSurvey/"  # Define the folder path
+                    file_key = f"{folder_path}PostSurveydata_{survey.id}.pdf" 
+                    s3.upload_fileobj(pdf_buffer, settings.AWS_STORAGE_BUCKET_NAME,file_key, ExtraArgs={'ContentType': 'application/pdf'})
 
-                    with open(pdf_filepath, 'rb') as pdf_file:
-                        s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
+    # Construct the PDF URL
+                    pdf_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_key}"
+
+                  
+                   
+                    # s3 = boto3.client('s3',
+                    #   aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    #   aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    #   region_name=settings.AWS_S3_REGION_NAME)
+
+                    # with open(pdf_filepath, 'rb') as pdf_file:
+                    #     s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
                         
-                    pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
+                    # pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
                     survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.email for post in data)))
                     survey.save()
@@ -220,10 +251,11 @@ class CreateSurvey(APIView):
                     
                     
                 if survey.survey_type=="MID":
-                    pdf_filename = f"MidSurveydata_{survey.id}.pdf"
-                    pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    # pdf_filename = f"MidSurveydata_{survey.id}.pdf"
+                    # pdf_filepath = os.path.join(settings.MEDIA_ROOT, pdf_filename)
+                    pdf_buffer = io.BytesIO()
 
-                    doc = SimpleDocTemplate(pdf_filepath, pagesize=A4)
+                    doc = SimpleDocTemplate(pdf_buffer, pagesize=A4)
 
     
                     data = QuestionAnswer.objects.all().order_by('email')
@@ -273,15 +305,31 @@ class CreateSurvey(APIView):
 
   
                     doc.build([table])
+                    pdf_buffer.seek(0)
                     s3 = boto3.client('s3',
                       aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                       aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                       region_name=settings.AWS_S3_REGION_NAME)
+                    folder_path = f"MidSurvey/"  # Define the folder path
+                    file_key = f"{folder_path}MidtSurveydata_{survey.id}.pdf" 
+                    s3.upload_fileobj(pdf_buffer, settings.AWS_STORAGE_BUCKET_NAME,file_key, ExtraArgs={'ContentType': 'application/pdf'})
 
-                    with open(pdf_filepath, 'rb') as pdf_file:
-                        s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
+    # Construct the PDF URL
+                    pdf_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_key}"
+
+                  
+
+    # Construct the PDF URL
+                    
+                    # s3 = boto3.client('s3',
+                    #   aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    #   aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                    #   region_name=settings.AWS_S3_REGION_NAME)
+
+                    # with open(pdf_filepath, 'rb') as pdf_file:
+                    #     s3.upload_fileobj(pdf_file, settings.AWS_STORAGE_BUCKET_NAME, pdf_filename)
                         
-                    pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
+                    # pdf_url = f"{settings.MEDIA_URL}{pdf_filename}"
 
     
                     survey.pdf_link = pdf_url
