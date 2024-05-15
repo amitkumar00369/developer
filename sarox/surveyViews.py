@@ -149,6 +149,7 @@ class CreateSurvey(APIView):
                     # survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.suggestion for post in data)))
                     survey.save()
+                    # data.delete()
 
 
  
@@ -244,6 +245,7 @@ class CreateSurvey(APIView):
                     survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.email for post in data)))
                     survey.save()
+                    # data.delete()
                     
                     
                     
@@ -335,6 +337,7 @@ class CreateSurvey(APIView):
                     survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.email for post in data)))
                     survey.save()
+                    # data.delete()
 
                     
     
@@ -344,7 +347,7 @@ class CreateSurvey(APIView):
                 
                 
                 
-                return Response({'message':'Survey created successfully','data':serializer.data,'submission_count':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Survey created successfully','data':serializer.data,'lenght_of_survey_table':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
             else:
                 return Response({'message':serializer.errors,'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
@@ -390,7 +393,7 @@ class getAllSurvey(APIView):
                 serializer=SurveySerializer(survey,many=True)
                 
                 if serializer:
-                    return Response({'message':'All survey data retrieves successfully','data':serializer.data,'submission_count':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                    return Response({'message':'All survey data retrieves successfully','data':serializer.data,'lenght_of_survey_table':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
                 else:
                     return Response(serializer.errors,status=404)
