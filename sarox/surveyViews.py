@@ -56,7 +56,6 @@ class CreateSurvey(APIView):
             if token_instance is None and tokens is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
             
-            count=len(SurveyTable.objects.all())
             
             serializer=SurveySerializer(data=request.data)
             
@@ -346,6 +345,7 @@ class CreateSurvey(APIView):
  
                 
                 
+                count=len(SurveyTable.objects.all())
                 
                 return Response({'message':'Survey created successfully','data':serializer.data,'lenght_of_survey_table':count,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             
