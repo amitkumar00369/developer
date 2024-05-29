@@ -30,11 +30,11 @@ class UserSignIN(APIView):
                 portal_login_link = "https://docs.google.com/forms/d/e/1FAIpQLSf3tbsAaZZfTNU_4mGGOL9l-Hd0U7rXeUPW1PwI1kPfB65vFw/viewform"
                 email=EmailMessage(
                 'Welcome Aboard as a Coach!',
-                # f'Please fill the form:- {google_form_link}',
+                
                 f"""
                 Dear {user.name},
-                Your login Email:{user.email} and 
-                password:{user.password},
+                Your email {user.email} and 
+                password {user.password},
                 
                 We're thrilled to welcome you aboard 
                 as a coach here at Pro Growth! Your 
@@ -51,10 +51,12 @@ class UserSignIN(APIView):
                 Here are a few things to get you started:
                 To Log in to your coach dashboard,
                 Clink the link below to change password.
-                {password_change_link},
-                Here is the link to the portal,enter your
+                ({password_change_link}),
+                
+                --**Here is the link to the portal,enter your
                 email and password to log In.
-                {portal_login_link},
+                ({portal_login_link}),
+                
                 From here, you can manage your Programs,put
                 updates, and access resources to enhance your
                 coaching experience.
@@ -70,12 +72,13 @@ class UserSignIN(APIView):
                 If you have any questions or need assistance, please
                 don't hesitate to reach out.
 
-                Welcome aboard, [Coach's Name]!
+                Welcome aboard, {user.name}!
 
                 Best regards,
                 Team,
-                PRO GROWTH
+                PRO GROWTH,
                 """,
+                
          
                 'email@progrowth.coach',  # Replace with your sender email address
                 [user.email],  # Extract the email address from the user instance
@@ -783,7 +786,8 @@ class ByCourseName(APIView):
                                     'PPT': prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
                                     'headings': prog.headings,
                                     'video': prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
-                                    'date': prog.date
+                                    'date': prog.date,
+                                    'active':prog.active
                                     })
                     else:
                         week_details[prog.weeks] = [{
@@ -791,7 +795,8 @@ class ByCourseName(APIView):
                         'PPT': prog.PPT.url if prog.PPT and hasattr(prog.PPT, 'url') else None,
                         'headings': prog.headings,
                         'video': prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
-                        'date': prog.date
+                        'date': prog.date,
+                        'active':prog.active
                         }]
 
 # Convert week_details into the required format
