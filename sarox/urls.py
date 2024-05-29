@@ -103,7 +103,7 @@ urlpatterns = [
     path('GetAssignCourseofCoach/<str:email>',GetAssignCourseofCoach.as_view()),
     path('GetAssignCourseofCoach/',GetAssignCourseofCoach.as_view()),
     
-    path('activeCourse/<str:email>/<int:cid>/<str:week>',activeCourse.as_view()),
+    path('activeCourse/<str:email>/<int:cid>/<str:week>/<int:id>',activeCourse.as_view()),
     path('activeCourse/<str:email>//<str:week>',activeCourse.as_view()),
     path('activeCourse//<int:cid>/<str:week>',activeCourse.as_view()),
     path('activeCourse/',activeCourse.as_view()),

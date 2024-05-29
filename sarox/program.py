@@ -552,7 +552,7 @@ class GetAssignCourseofCoach(APIView):
           
           
 class activeCourse(APIView):
-    def put(self,request,email=None,cid=None,week=None):
+    def put(self,request,email=None,cid=None,week=None,id=None):
         token = request.headers.get('Authorization')
         if not token:
             raise AuthenticationFailed('Token is required for this operation')
@@ -610,6 +610,9 @@ class activeCourse(APIView):
             
             if not course:
                 return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+     #done
+            if course.id!=id:
+                return Response({'error':"course id and week name not matched",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
      
                 
             course.active=actives
