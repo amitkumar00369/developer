@@ -606,7 +606,7 @@ class activeCourse(APIView):
 
 
             
-            course=Course_table.objects.filter(weeks=week,course_id=cid).first()
+            course=Course_table.objects.filter(weeks=week,course_id=cid,id=id).first()
             
             if not course:
                 return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)

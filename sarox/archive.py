@@ -73,7 +73,7 @@ class archiveCourses(APIView):
                 courses=Course_table.objects.filter(course_id=id).all()
                 bool_val=set(cor.active for cor in courses)
                 count=len(bool_val)
-                print(courses)
+                # print(courses)
                 if count==2:
                     continue
                 if False in bool_val:
@@ -94,7 +94,7 @@ class archiveCourses(APIView):
                             'date': course.date
                             }
                             datas.append(data)
-                            value=course.archive
+                            
                             courseId.append(course.course_id)
                         else:
                             continue
@@ -106,10 +106,10 @@ class archiveCourses(APIView):
                         continue
 
                     
-                
+            
 
             print(datas)  
-            return Response({'message':'All archive courses retrieves','data':datas,'archives':value,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            return Response({'message':'All archive courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
 
   
         except Exception as e:
