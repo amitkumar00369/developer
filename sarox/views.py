@@ -584,7 +584,56 @@ class AdminLogOut(APIView):
         
 
 
+class ChangePassword(APIView):
+    def post(self,request):
+        token = request.headers.get('Authorization')
 
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Admin token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
+        
+            email=request.data.get('email')
+            new_password=request.data.get('password')
+            if email is None:
+                return Response({'error':"Please enter email",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            if not new_password:
+                return Response({'error':"Please enter new password",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+                
+                
+            
+            admin=AdminTables.objects.filter(id=userId).first()
+            if admin is None:
+                return Response({'error':"Admin not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if admin.email!=email:
+                return Response({'error':"Admin email not matched",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+                
+            admin.password=new_password
+            admin.save()
+            return Response({'message':'Admin changed password successfully','status':status.HTTP_200_OK},status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
 
 
 # Media section using AWS cloud Storage

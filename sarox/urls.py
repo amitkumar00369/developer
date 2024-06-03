@@ -14,7 +14,7 @@ from .views import ResetPassword
 from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions,GetAllPreQuestion,deletePreQuestions,PreSubmitQuestions,PostSubmitQuestions,GetAllPostQuestion,deletePostQuestions
 from .generate_pdf import Mid_generate_pdf,Post_generate_pdf,Pre_generate_pdf
 
-
+from .views import ChangePassword
 
 
 
@@ -36,6 +36,7 @@ urlpatterns = [
     path('admin/logout',AdminLogOut.as_view()),
     path('getAllCoach',UserDetails.as_view()),
     path('getCoachbyId/<int:id>',UserDetails.as_view()),
+    path('changePassword',ChangePassword.as_view()),
     
     
     path('deletCoachbyID/<int:id>',DeleteCoach.as_view()),
