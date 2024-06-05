@@ -78,8 +78,8 @@ def Mid_generate_pdf(request):
     # Optional: delete data after creating the PDF
     # data.delete()
 
-    return response
-    # data.delete()
+    # return response
+    data.delete()
 
     return response
 
@@ -154,7 +154,7 @@ def Post_generate_pdf(request):
 
     # Build the PDF
     doc.build([table])
-    # data.delete()
+    data.delete()
 
     return response
 
@@ -221,7 +221,7 @@ def Pre_generate_pdf(request):
 
     # Build the PDF
     doc.build([table])
-    # data.delete()
+    data.delete()
 
     return response
 
