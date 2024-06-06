@@ -58,12 +58,7 @@ class archiveCourses(APIView):
                 return Response({'error':'User not found','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
             
             courses_id=json.loads(user.Course_id)
-           
-            # courses = Course_table.objects.all().order_by('-course_name')
-            
-            
-                
-            
+
             data = {}
             datas=[]
            
@@ -80,12 +75,8 @@ class archiveCourses(APIView):
                     continue
                 for course in courses:
                     print(course)
-                    
-                    
                     if course.active==True:
-                        
                         if course.course_id not in courseId:
-                    
                             course.archive=True
                             course.save()
                             data= {
@@ -108,7 +99,7 @@ class archiveCourses(APIView):
                     
             
 
-            print(datas)  
+            
             return Response({'message':'All archive courses retrieves','data':datas,'status':status.HTTP_200_OK},status.HTTP_200_OK)
 
   
