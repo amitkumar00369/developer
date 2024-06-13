@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view
 from .serializers1 import UserSerializer,AdminSerializer,UserTokenSerializer,AdminStatusChangeSerializer,AdminTokenSerializer,ImageSerializer,ProgramSerializer,CT1Serializer,VideoSerializer
 from rest_framework.permissions import IsAuthenticated
 import jwt,datetime
+from datetime import datetime
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_protect 
@@ -78,11 +79,12 @@ class archiveCourses(APIView):
                     if course.active==True:
                         if course.course_id not in courseId:
                             course.archive=True
+                            course.end_date=datetime.today().date()
                             course.save()
                             data= {
                             'course_id': course.course_id,
                             'course_name': course.course_name,
-                            'date': course.date
+                            'end_date': course.end_date,
                             }
                             datas.append(data)
                             

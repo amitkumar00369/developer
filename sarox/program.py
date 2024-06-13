@@ -10,6 +10,7 @@ import jwt,datetime
 from rest_framework.exceptions import AuthenticationFailed
 from django.contrib.auth.hashers import check_password
 from django.views.decorators.csrf import csrf_protect 
+from datetime import datetime
 import json
 from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -616,11 +617,14 @@ class activeCourse(APIView):
      
                 
             course.active=actives
+            course.start_date = datetime.today().date()
             course.save()
             if course.active==False:
-                return Response({'message':'Course uncompleted successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                course.start_date=''
+                
+                return Response({'message':'Course not started successfully','course week status':course.active,'start_date':course.start_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             else:
-                return Response({'message':'Course completed successfully','course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Course started successfully','start_date':course.start_date,'course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
             
         except Exception as e:
