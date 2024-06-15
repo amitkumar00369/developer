@@ -622,9 +622,9 @@ class activeCourse(APIView):
             if course.active==False:
                 course.start_date=''
                 
-                return Response({'message':'Course not started successfully','course week status':course.active,'week_date':course.start_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Course not started successfully','course week status':course.active,'start_date':course.start_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
             else:
-                return Response({'message':'Course started successfully','week_date':course.start_date,'course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'Course started successfully','start_date':course.start_date,'course week status':course.active,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
             
         except Exception as e:
