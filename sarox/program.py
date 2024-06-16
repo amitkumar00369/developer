@@ -698,4 +698,90 @@ class archiveCourse(APIView):
             
                 
                 
+class CoachactiveCourse(APIView):
+    def put(self,request,email=None,cid=None,week=None,id=None):
+        token = request.headers.get('Authorization')
+        if not token:
+            raise AuthenticationFailed('Token is required for this operation')
+        if not email:
+            return Response({'error':'email required','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+
+        # The token obtained from the header might be prefixed with "Bearer "
+        # Remove the "Bearer " prefix if present
+        token = token.replace('Bearer ', '')
+        
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Token has expired')
+        except jwt.InvalidTokenError:
+            raise AuthenticationFailed('Invalid token')
+
+        userId = payload['id']
+
+        # Retrieve the token instance from the AdminTokenTable
+        try:
+            token_instance = UserTokenTable.objects.filter(user_id=userId).all()
+            # tokens=AdminTokenTable.objects.filter(user_id=userId).all()
+            if token_instance is None:
+                return Response({'error':"Token not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            
+
+            user=CustomUser.objects.filter(email=email).first()
+            if user is None:
+                return Response({'error':'user not defined','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+          
+      
+            courses_id=json.loads(user.Course_id)
+            if not courses_id:
+                return Response({'message':'please assign course to coach','status':status.HTTP_200_OK},status.HTTP_200_OK)
+            if not cid:
+                return Response({'error':"Entred course id",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if not week:
+                return Response({'error':"Entered week name",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
                 
+                
+            if cid not in courses_id:
+                return Response({'message':'This course Id not found','status':status.HTTP_200_OK},status.HTTP_200_OK)
+            
+            data=json.loads(request.body)
+                     
+            
+            week_date=data.get('week_date')
+            # if actives is None:
+            #     return Response({'error':"boolean value in actives not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            if not week_date:
+                return Response({'error':"date not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            assigned_date=datetime.strptime(week_date,"%d-%m-%Y").date()
+                
+
+
+            
+            course=Course_table.objects.filter(weeks=week,course_id=cid,id=id).first()
+            
+            if not course:
+                return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+     #done
+            if course.id!=id:
+                return Response({'error':"course id and week name not matched",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+     
+                
+            # course.active=actives
+            # course.start_date = datetime.today().date()
+            # course.save()
+            if course.active==True:
+                course.week_date=assigned_date
+                course.save()
+                
+                return Response({'message':'new date posted successfully','course week status':course.active,'week_date':course.week_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            else:
+                course.week_date=''
+                course.save()
+                
+                return Response({'message':'Please active course successfully','course week status':course.active,'week_date':course.week_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                
+            
+        except Exception as e:
+            return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
+    

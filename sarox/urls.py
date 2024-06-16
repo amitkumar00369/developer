@@ -15,6 +15,7 @@ from .views2 import GetAllQuestion,deleteQuestions,SubmitQuestions,GetAllPreQues
 from .generate_pdf import Mid_generate_pdf,Post_generate_pdf,Pre_generate_pdf
 
 from .views import ChangePassword
+from .program import CoachactiveCourse
 
 
 
@@ -130,7 +131,12 @@ urlpatterns = [
     path('deletePostSurveyQuestions',deletePostQuestions.as_view()),
     path('MidSurveyPdf',Mid_generate_pdf),
     path('PostSurveyPdf',Post_generate_pdf),
-    path('PreSurveyPdf',Pre_generate_pdf)
+    path('PreSurveyPdf',Pre_generate_pdf),
+    path('datePostCoach/<str:email>/<int:cid>/<str:week>/<int:id>',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>/<int:cid>//<int:id>',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>/<int:cid>/<str:week>/',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>//<str:week>/<int:id>',CoachactiveCourse.as_view()),
+    path('datePostCoach//<int:cid>/<str:week>/<int:id>',CoachactiveCourse.as_view()),
     
     
     
