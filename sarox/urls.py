@@ -137,6 +137,7 @@ urlpatterns = [
     path('datePostCoach/<str:email>/<int:cid>/<str:week>/',CoachactiveCourse.as_view()),
     path('datePostCoach/<str:email>//<str:week>/',CoachactiveCourse.as_view()),
     path('datePostCoach//<int:cid>/<str:week>/',CoachactiveCourse.as_view()),
+    # path('getcourse/<int:cid>',getcourse)
     
     
     

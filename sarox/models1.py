@@ -106,7 +106,7 @@ class Course_table(models.Model):
     time = models.TimeField(default=timezone.now, blank=True)
     start_date = models.DateField(default=timezone.now, blank=True)
     end_date = models.DateField(default=timezone.now, blank=True)
-    week_date=models.DateField(blank=True)
+    week_date=models.DateField(blank=True,null=True)
    
 
     # def save(self, *args, **kwargs):

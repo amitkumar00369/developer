@@ -759,6 +759,11 @@ class CoachactiveCourse(APIView):
 
             
             courses=Course_table.objects.filter(weeks=week,course_id=cid).all()
+            # cor=Course_table.objects.filter(course_id=cid).all()
+            # for cs in cor:
+            #     cs.week_date=[]
+            #     cs.save()
+            
             
             # if not course:
             #     return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
@@ -803,3 +808,12 @@ class CoachactiveCourse(APIView):
         except Exception as e:
             return Response({'message':str(e),'status':status.HTTP_500_INTERNAL_SERVER_ERROR},status.HTTP_500_INTERNAL_SERVER_ERROR)
     
+    
+    # class CorID(APIView):
+    #     def get(request,cid=None):
+    #         if cid:
+    #             courses=Course_table.objects.filter(course_id=cid).all()
+    #             for cor in courses:
+    #                 cor.week_date=''
+    #                 cor.save()
+    #         return Response('Successfull')

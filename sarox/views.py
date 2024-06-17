@@ -846,11 +846,12 @@ class ByCourseName(APIView):
                         'video': prog.video.url if prog.video and hasattr(prog.video, 'url') else None,
                         'date': prog.date,
                         'active':prog.active
+                        
                         }]
 
 # Convert week_details into the required format
             for week, details_list in week_details.items():
-                week_details_dict = {'week_name': week}
+                week_details_dict = {'week_name': week,'week_date':{prog.week_date for prog in program if prog.weeks==week if prog.week_date} or None}
                 for index, details in enumerate(details_list, start=1):
                     week_details_dict['details{}'.format(index)] = details
                 course_details.append(week_details_dict)
@@ -967,7 +968,8 @@ class CourseName(APIView):
                 data= {
                     'course_id': Courses.course_id,
                     'course_name': Courses.course_name,
-                    'date': Courses.date
+                    'date': Courses.date,
+                    # 'week_date':courses.week_date,
                     }
                 datas.append(data)
                         
