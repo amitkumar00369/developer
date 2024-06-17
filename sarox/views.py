@@ -820,6 +820,8 @@ class ByCourseName(APIView):
                 program = Course_table.objects.filter(course_id=cid).all()
                 program = Course_table.objects.filter(course_id=cid).all()
                 course_details = []
+                if not program:
+                    return Response({'message':'Course not found','status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
 
 # Dictionary to store details by week name
                 week_details = {}
@@ -950,6 +952,7 @@ class CourseName(APIView):
             if token_instance is None and tokens is None:
                 return Response({'error': "Token is required"}, status=status.HTTP_400_BAD_REQUEST)
             if cid is None:
+
                 courses = Course_table.objects.all().order_by('-course_name')
                 
 
