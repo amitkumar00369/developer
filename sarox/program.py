@@ -699,7 +699,7 @@ class archiveCourse(APIView):
                 
                 
 class CoachactiveCourse(APIView):
-    def put(self,request,email=None,cid=None,week=None,id=None):
+    def put(self,request,email=None,cid=None,week=None):
         token = request.headers.get('Authorization')
         if not token:
             raise AuthenticationFailed('Token is required for this operation')
@@ -758,28 +758,46 @@ class CoachactiveCourse(APIView):
 
 
             
-            course=Course_table.objects.filter(weeks=week,course_id=cid,id=id).first()
+            courses=Course_table.objects.filter(weeks=week,course_id=cid).all()
             
-            if not course:
-                return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            # if not course:
+            #     return Response({'error':"course id and week name not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
      #done
-            if course.id!=id:
-                return Response({'error':"course id and week name not matched",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            # if course.id!=id:
+            #     return Response({'error':"course id and week name not matched",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
      
                 
             # course.active=actives
             # course.start_date = datetime.today().date()
             # course.save()
-            if course.active==True:
+            data=[]
+            cor_id=[]
+            for course in courses:
+                # if course.active==True:
                 course.week_date=assigned_date
                 course.save()
+            
+            for cor in courses:
+                if cor.course_id not in cor_id:
+                    datas={
+                    'week_name':cor.weeks,
+                    'course_name':cor.course_name,
+                    'course_id':cor.course_id,
+                    'week_date':cor.week_date,
+                    }
+                    data.append(datas)
+                    cor_id.append(cor.course_id)
+                else:
+                    continue
                 
-                return Response({'message':'new date posted successfully','course week status':course.active,'week_date':course.week_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
-            else:
-                course.week_date=''
-                course.save()
+                    
                 
-                return Response({'message':'Please active course successfully','course week status':course.active,'week_date':course.week_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+                return Response({'message':'new date posted successfully','data':data,'status':status.HTTP_200_OK},status.HTTP_200_OK)
+            # else:
+            #     course.week_date=''
+            #     course.save()
+                
+                # return Response({'message':'Please active course successfully','course week status':course.active,'week_date':course.week_date,'status':status.HTTP_200_OK},status.HTTP_200_OK)
                 
             
         except Exception as e:

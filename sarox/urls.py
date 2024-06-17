@@ -132,11 +132,11 @@ urlpatterns = [
     path('MidSurveyPdf',Mid_generate_pdf),
     path('PostSurveyPdf',Post_generate_pdf),
     path('PreSurveyPdf',Pre_generate_pdf),
-    path('datePostCoach/<str:email>/<int:cid>/<str:week>/<int:id>',CoachactiveCourse.as_view()),
-    path('datePostCoach/<str:email>/<int:cid>//<int:id>',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>/<int:cid>/<str:week>',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>/<int:cid>/',CoachactiveCourse.as_view()),
     path('datePostCoach/<str:email>/<int:cid>/<str:week>/',CoachactiveCourse.as_view()),
-    path('datePostCoach/<str:email>//<str:week>/<int:id>',CoachactiveCourse.as_view()),
-    path('datePostCoach//<int:cid>/<str:week>/<int:id>',CoachactiveCourse.as_view()),
+    path('datePostCoach/<str:email>//<str:week>/',CoachactiveCourse.as_view()),
+    path('datePostCoach//<int:cid>/<str:week>/',CoachactiveCourse.as_view()),
     
     
     

@@ -106,14 +106,14 @@ class Course_table(models.Model):
     time = models.TimeField(default=timezone.now, blank=True)
     start_date = models.DateField(default=timezone.now, blank=True)
     end_date = models.DateField(default=timezone.now, blank=True)
-    week_date=models.DateField(default=timezone.now, blank=True)
+    week_date=models.DateField(blank=True)
    
 
-    def save(self, *args, **kwargs):
-        # Update date and time fields to current date and time on every save
-        self.date = timezone.now().date()
-        self.time = timezone.now().time()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     # Update date and time fields to current date and time on every save
+    #     # self.date = timezone.now().date()
+    #     self.time = timezone.now().time()
+    #     super().save(*args, **kwargs)
    
     
     
