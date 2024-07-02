@@ -148,7 +148,7 @@ class CreateSurvey(APIView):
                     # survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.suggestion for post in data)))
                     survey.save()
-                    # data.delete()
+                    data.delete()
 
 
  
@@ -244,7 +244,7 @@ class CreateSurvey(APIView):
                     survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.email for post in data)))
                     survey.save()
-                    # data.delete()
+                    data.delete()
                     
                     
                     
@@ -336,7 +336,7 @@ class CreateSurvey(APIView):
                     survey.pdf_link = pdf_url
                     survey.submission_count=len(list(set(post.email for post in data)))
                     survey.save()
-                    # data.delete()
+                    data.delete()
 
                     
     
