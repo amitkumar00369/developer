@@ -16,7 +16,7 @@ from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.mail import EmailMessage
 from PIL import Image
-from datetime import datetime
+# from datetime import datetime
 
 
 class UserSignIN(APIView):
@@ -659,7 +659,7 @@ class Imageupload(APIView):
     
 # Programe table ---------------------------------------------------------------------
 
-from datetime import date
+# from datetime import date
 class WeekProgram(APIView):
     def post(self,request):
         parser_classes = [MultiPartParser, FormParser]
