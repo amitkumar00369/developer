@@ -16,6 +16,7 @@ from django.core.mail import send_mail
 from rest_framework.parsers import MultiPartParser, FormParser
 from django.core.mail import EmailMessage
 from PIL import Image
+from datetime import datetime
 
 
 class UserSignIN(APIView):
@@ -658,7 +659,7 @@ class Imageupload(APIView):
     
 # Programe table ---------------------------------------------------------------------
 
-
+from datetime import date
 class WeekProgram(APIView):
     def post(self,request):
         parser_classes = [MultiPartParser, FormParser]
@@ -694,6 +695,11 @@ class WeekProgram(APIView):
             subheading2=request.data.get('text2')
             heading2=request.data.get('heading2')
             weeks=request.data.get('weeks')
+            date_str= request.data.get('date')
+            if not date_str:
+                return Response({'error':"date not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            assigned_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            # formatted_date = assigned_date.strftime("%Y-%m-%d")
             
             programs = Course_table.objects.all()
             course_names_set = {pro.course_name for pro in programs}
@@ -717,6 +723,7 @@ class WeekProgram(APIView):
                 prog.headings2 = json_string2
                 prog.course_id=prog.course_id
                 prog.weeks=weeks
+                prog.date=assigned_date
                 prog.save()
 
 
@@ -741,7 +748,8 @@ class WeekProgram(APIView):
     
                     if course_name not in course_names_set:
  
-                        prog.course_id = max(course_ids_set)+1
+                        # prog.course_id = max(course_ids_set)+1
+                        prog.coure_id=1
                         prog.save()
                 elif prog.course_name not in course_names_set:
       

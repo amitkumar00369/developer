@@ -252,7 +252,7 @@ EMAIL_HOST_PASSWORD = 'bsoq pafe nmix avuu'
 
 AWS_ACCESS_KEY_ID = 'AKIAW3MEAYO4JQ4IWQPV'
 AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'progrowth-project-v1'
+AWS_STORAGE_BUCKET_NAME = 'progrowth.coach'
 AWS_DEFAULT_ACL = 'private'
 AWS_S3_REGION_NAME = 'ap-south-1'  # e.g., us-west-2
 
