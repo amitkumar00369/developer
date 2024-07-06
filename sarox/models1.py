@@ -89,37 +89,8 @@ class profile_image_table(models.Model):
 from django.db import models
 from django.utils import timezone
 
-class ReadOnlyDateTimeField(models.DateTimeField):
-    """
-    Custom read-only DateTimeField that behaves like a DateField for reading and storing purposes.
-    """
 
-    def from_db_value(self, value, expression, connection):
-        # Convert database value to Python value
-        if value is None:
-            return value
-        if isinstance(value, datetime.datetime):
-            return value.date()
-        return value
 
-    def to_python(self, value):
-        # Convert value to Python representation
-        if isinstance(value, datetime.datetime):
-            return value.date()
-        return value
-
-    def get_prep_value(self, value):
-        # Prepare value for database storage
-        if value is None:
-            return value
-        if isinstance(value, datetime.datetime):
-            return value.date()
-        return value
-
-    def value_to_string(self, obj):
-        # Convert value to string representation
-        value = self.value_from_object(obj)
-        return '' if value is None else str(value)
 
 class Course_table(models.Model):
     id=models.AutoField(primary_key=True)

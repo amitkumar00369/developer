@@ -659,7 +659,7 @@ class Imageupload(APIView):
     
 # Programe table ---------------------------------------------------------------------
 
-# from datetime import date
+# from datetime import datetime
 class WeekProgram(APIView):
     def post(self,request):
         parser_classes = [MultiPartParser, FormParser]
@@ -687,6 +687,7 @@ class WeekProgram(APIView):
             token_instance = AdminTokenTable.objects.filter(user_id=userId).all()
             if token_instance is None:
                 return Response({'error':"Token is required",'status':status.HTTP_400_BAD_REQUEST},status.HTTP_400_BAD_REQUEST)
+            from datetime import datetime
             course_name=request.data.get('course_name')
             subheading=request.data.get('text')
             heading=request.data.get('heading')
@@ -695,10 +696,10 @@ class WeekProgram(APIView):
             subheading2=request.data.get('text2')
             heading2=request.data.get('heading2')
             weeks=request.data.get('weeks')
-            date_str= request.data.get('date')
-            if not date_str:
-                return Response({'error':"date not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
-            assigned_date = datetime.strptime(date_str, "%Y-%m-%d").date()
+            # date_str= request.data.get('date')
+            # if not date_str:
+            #     return Response({'error':"date not found",'status':status.HTTP_404_NOT_FOUND},status.HTTP_404_NOT_FOUND)
+            # assigned_date = datetime.strptime(date_str, "%Y-%m-%d").date()
             # formatted_date = assigned_date.strftime("%Y-%m-%d")
             
             programs = Course_table.objects.all()
@@ -723,7 +724,7 @@ class WeekProgram(APIView):
                 prog.headings2 = json_string2
                 prog.course_id=prog.course_id
                 prog.weeks=weeks
-                prog.date=assigned_date
+                
                 prog.save()
 
 
@@ -742,14 +743,16 @@ class WeekProgram(APIView):
                         
                 
                          prog.course_id = couser.course_id
+                         prog.date=couser.date
                          prog.save()
                     
 
     
                     if course_name not in course_names_set:
  
-                        # prog.course_id = max(course_ids_set)+1
-                        prog.coure_id=1
+                        prog.course_id = max(course_ids_set)+1
+                        prog.date=datetime.today().date()
+                        # prog.coure_id=1
                         prog.save()
                 elif prog.course_name not in course_names_set:
       
